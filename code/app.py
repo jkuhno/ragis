@@ -14,15 +14,15 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.output_parsers import StrOutputParser
 
 
-bill_ca = CSVLoader(file_path='/data/dummy/sample input/LoginOutsideFinland_Bill_CA.csv').load()[0]
-bill_us = CSVLoader(file_path='/data/dummy/sample input/LoginOutsideFinland_Bill_US.csv').load()[0]
-joel_ca = CSVLoader(file_path='/data/dummy/sample input/LoginOutsideFinland_Joel.csv').load()[0]
+bill_ca = CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Bill_CA.csv').load()[0]
+bill_us = CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Bill_US.csv').load()[0]
+joel_ca = CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Joel.csv').load()[0]
 
 
-users = pd.read_csv('/data/dummy/exportUsers_2024-9-13.csv')
+users = pd.read_csv('/data/scratch/exportUsers_2024-9-13.csv')
 users = users.dropna(axis=1, how="all")
-users = users.to_csv('/data/dummy/exportUsers_2024-9-13.csv')
-user_docs = CSVLoader(file_path='/data/dummy/exportUsers_2024-9-13.csv').load()
+users = users.to_csv('/data/scratch/exportUsers_2024-9-13.csv')
+user_docs = CSVLoader(file_path='/data/scratch/exportUsers_2024-9-13.csv').load()
 
 
 # Context from Entra ID
@@ -35,7 +35,7 @@ retriever_users = vectorstore_users.as_retriever(search_kwargs={'k': 1})
 
 
 # Context from previously closed incidents
-context = CSVLoader(file_path='/data/dummy/Closed Incidents/Closed_Incidents_1.csv').load()
+context = CSVLoader(file_path='/data/scratch/Closed Incidents/Closed_Incidents_1.csv').load()
 
 vectorstore = Chroma.from_documents(
     documents=context,
@@ -55,9 +55,9 @@ def test(input):
     
     prompt = PromptTemplate(
     template=""" <|begin_of_text|><|start_header_id|>system<|end_header_id|>
-    You are an assistant tasked to reason if an input incident is a true positive or a false positive. True positives are       incidents that require more attention from the user, false positives usually mean no harm.
-    Use the Active Directory information and previous incidents to logically decide if input incident is malicious or not.      Flag malicious as true positive and logically acceptable as false positive.
-    The user wants a "true positive" or "false positive" prediction, a short summary of your reasoning and a list of key        attributes you used for the reasoning.
+    You are an assistant tasked to reason if an input incident is a true positive or a false positive. True positives are incidents that require more attention from the user, false positives usually mean no harm.
+    Use the Active Directory information and previous incidents to logically decide if input incident is malicious or not. Flag malicious as true positive and logically acceptable as false positive.
+    The user wants a "true positive" or "false positive" prediction, a short summary of your reasoning and a list of key attributes you used for the reasoning.
     <|eot_id|>
     <|start_header_id|>user<|end_header_id|>
     Here is the input incident: {incident}

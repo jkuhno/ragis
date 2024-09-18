@@ -108,9 +108,15 @@ execution:
     gpu:
       requested: 0
     sharedMemoryMB: 0
-  secrets: []
+  secrets:
+  - variable: NVIDIA_API_KEY
+    description: ""
   mounts:
   - type: project
     target: /project/
     description: Project directory
     options: rw
+  - type: host
+    target: /data/scratch/
+    description: ""
+    options: ""
