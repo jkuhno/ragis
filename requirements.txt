@@ -1,1 +1,8 @@
 jupyterlab>3.0
+langchain-nvidia-ai-endpoints==0.2.0
+langchain-chroma==0.1.2
+langchain-community==0.2.10
+langchain-openai==0.1.17
+langchain==0.2.11
+pandas
+gradio==4.15.0
