@@ -2,12 +2,15 @@ import gradio as gr
 import os
 
 def greet(name, intensity):
-    return "Hello, " + name + "!" * int(intensity)
+    return "Hi, " + name + "!" * int(intensity)
+
+input = gr.Textbox(label='Input')
+output = gr.Textbox(label='Output', lines=3)
 
 app = gr.Interface(
     fn=greet,
-    inputs=["text", "slider"],
-    outputs=["text"],
+    inputs=[input],
+    outputs=[output],
 )
 
 proxy_prefix = os.environ.get("PROXY_PREFIX")

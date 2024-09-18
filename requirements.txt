@@ -5,4 +5,4 @@ langchain-community==0.2.10
 langchain-openai==0.1.17
 langchain==0.2.11
 pandas
-gradio==4.15.0
+gradio==4.43.0
