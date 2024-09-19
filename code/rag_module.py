@@ -1,54 +1,31 @@
-import pandas as pd
-from langchain_community.document_loaders import CSVLoader
-
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-
 from langchain_community.vectorstores import Chroma
 from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
-from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.output_parsers import StrOutputParser
 
-
-bill_ca = CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Bill_CA.csv').load()[0]
-bill_us = CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Bill_US.csv').load()[0]
-joel_ca = CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Joel.csv').load()[0]
-
-
-users = pd.read_csv('/data/scratch/exportUsers_2024-9-13.csv')
-users = users.dropna(axis=1, how="all")
-users = users.to_csv('/data/scratch/exportUsers_2024-9-13.csv')
-user_docs = CSVLoader(file_path='/data/scratch/exportUsers_2024-9-13.csv').load()
+import data_loader as loader
 
 
 # Context from Entra ID
 vectorstore_users = Chroma.from_documents(
-    documents=user_docs,
+    documents=loader.get_dummy_users(),
     collection_name="ragis-chroma-users",
     embedding=NVIDIAEmbeddings(model='NV-Embed-QA'),
 )
 retriever_users = vectorstore_users.as_retriever(search_kwargs={'k': 1})
 
 
-# Context from previously closed incidents
-context = CSVLoader(file_path='/data/scratch/Closed Incidents/Closed_Incidents_1.csv').load()
-
 vectorstore = Chroma.from_documents(
-    documents=context,
+    documents=loader.get_dummy_context(),
     collection_name="ragis-chroma",
     embedding=NVIDIAEmbeddings(model='NV-Embed-QA'),
 )
 retriever = vectorstore.as_retriever()
 
 
-def test(input):
-    if input == "bill_ca":
-        incident = bill_ca
-    elif input == "bill_us":
-        incident = bill_us
-    elif input == "joel_ca":
-        incident = joel_ca
+def generate(input):
+    incident = loader.get_dummy_input(input)
     
     prompt = PromptTemplate(
     template=""" <|begin_of_text|><|start_header_id|>system<|end_header_id|>
