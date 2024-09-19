@@ -1,31 +1,11 @@
-from langchain_community.vectorstores import Chroma
-from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_core.output_parsers import StrOutputParser
 
 import data_loader as loader
-
-
-# Context from Entra ID
-vectorstore_users = Chroma.from_documents(
-    documents=loader.get_dummy_users(),
-    collection_name="ragis-chroma-users",
-    embedding=NVIDIAEmbeddings(model='NV-Embed-QA'),
-)
-retriever_users = vectorstore_users.as_retriever(search_kwargs={'k': 1})
-
-
-vectorstore = Chroma.from_documents(
-    documents=loader.get_dummy_context(),
-    collection_name="ragis-chroma",
-    embedding=NVIDIAEmbeddings(model='NV-Embed-QA'),
-)
-retriever = vectorstore.as_retriever()
-
+import databases
 
 def generate(input):
-    incident = loader.get_dummy_input(input)
     
     prompt = PromptTemplate(
     template=""" <|begin_of_text|><|start_header_id|>system<|end_header_id|>
@@ -42,17 +22,20 @@ def generate(input):
     input_variables=["incident", "documents", "extended"],
     )
 
-
-    # Documents retrieved from vector store, that are the best match for the question
+    
+    incident = loader.get_dummy_input(input)
+    
+    retriever = databases.get_context_retriever()
     context_docs = retriever.invoke(incident.page_content)
 
+    retriever_users = databases.get_users_retriever()
+    user_info = retriever_users.invoke(incident.page_content)
 
-    context_users = retriever_users.invoke(incident.page_content)
-
+    
     # Chain input variables, keys match the input_variables in the PromptTemplate
     invoker = {"documents": context_docs,
            "incident": incident,
-           "extended": context_users
+           "extended": user_info
           }
 
     # Use Nvidia AI tokens, check "https://build.nvidia.com/" for how many left

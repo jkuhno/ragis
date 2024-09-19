@@ -1,15 +1,18 @@
 import pandas as pd
 from langchain_community.document_loaders import CSVLoader
 
+# Module for data loading
+# Dummy data is hard coded
+
 dummy_incident_list = ["Bill_CA", "Bill_US", "Joel_CA"]
 
 def get_dummy_input(input):
     if input == "Bill_CA":
-        return = CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Bill_CA.csv').load()[0]
+        return CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Bill_CA.csv').load()[0]
     elif input == "Bill_US":
-        return = CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Bill_US.csv').load()[0]
+        return CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Bill_US.csv').load()[0]
     elif input == "Joel_CA":
-        return = CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Joel.csv').load()[0]
+        return CSVLoader(file_path='/data/scratch/sample_input/LoginOutsideFinland_Joel.csv').load()[0]
 
 
 def get_dummy_users():
