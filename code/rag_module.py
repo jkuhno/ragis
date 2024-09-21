@@ -22,9 +22,8 @@ def generate(input):
     input_variables=["incident", "documents", "extended"],
     )
 
-    
     incident = loader.get_dummy_input(input)
-    
+
     retriever = databases.get_context_retriever()
     context_docs = retriever.invoke(incident.page_content)
 

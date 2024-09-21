@@ -1,8 +1,10 @@
 import pandas as pd
 from langchain_community.document_loaders import CSVLoader
 
+import test_data
+
 # Module for data loading
-# Dummy data is hard coded
+# Dummy data is hard coded in test_data
 
 # Absolute paths to dummy data
 # Edit this if paths change
@@ -31,11 +33,19 @@ sample_inputs = {
 }
 
 # Provide the sample alert UI names in a list
-dummy_incident_list = [value.get("name") for value in sample_inputs.values()]
+dummy_incident_list = test_data.get_sample_alerts("list")
 
 
-# Load and return the sample alert as LangChain Document, input_name is the choice from UI made by user
+# Load and return the sample alert as LangChain Document, input_name is the choice from UI made by user (value from "dummy_incident_list")
 def get_dummy_input(input_name):
+    # as pandas df
+    input = test_data.get_sample_alerts(input_name)
+    input.to_csv(f'/data/tmp/alert_{input_name}.csv')
+    return CSVLoader(file_path=f'/data/tmp/alert_{input_name}.csv').load()[0]
+    
+    """
+    Old execution
+    
     # Check if the input exists in the dictionary
     if input_name in sample_inputs:
         # Get the corresponding filename
@@ -44,10 +54,15 @@ def get_dummy_input(input_name):
         return CSVLoader(file_path=f'{paths["sample_inputs_path"]}{filename}').load()[0]
     else:
         raise ValueError(f"Invalid sample input name: {input_name}")
-
+    """
 
 # Load and return the sample alert as Pandas DataFrame, input_name is the choice from UI made by user (value from "dummy_incident_list")
 def get_input_as_pd(input_name):
+    return test_data.get_sample_alerts(input_name)
+    
+    """
+    Old execution
+    
     # Check if the input exists in the dictionary
     if input_name in sample_inputs:
         # Get the corresponding filename
@@ -56,10 +71,20 @@ def get_input_as_pd(input_name):
         return pd.read_csv(f'{paths["sample_inputs_path"]}{filename}', index_col=[0])
     else:
         raise ValueError(f"Invalid sample input name: {input_name}")
+    """
 
-
-# Clear NaN values from Entra ID bulk user csv and return the csv as either LangChain Document or Pandas DataFrame, corresponding to the "output_type"
+# Return user information as either LangChain Document or Pandas DataFrame, corresponding to the "output_type"
 def get_dummy_users(output_type = "Document"):
+    users = test_data.get_sample_users()
+    if output_type == "Document":
+        users.to_csv('/data/tmp/users.csv')
+        return CSVLoader(file_path='/data/tmp/users.csv').load()
+    elif output_type == "DataFrame":
+        return users
+
+    """
+    Old execution
+    
     users = pd.read_csv(paths["user_info"], index_col=[0])
     users = users.dropna(axis=1, how="all")
     if output_type == "Document":
@@ -70,13 +95,24 @@ def get_dummy_users(output_type = "Document"):
         return users
     else:
         raise ValueError(f"Invalid output type: {output_type}")
-
+    """
 
 # Return dummy closed incidents, either LangChain Document or Pandas DataFrame
 def get_dummy_context(output_type = "Document"):
+    docs = test_data.get_closed_incidents()
+    if output_type == "Document":
+        docs.to_csv('/data/tmp/docs.csv')
+        return CSVLoader(file_path='/data/tmp/docs.csv').load()
+    elif output_type == "DataFrame":
+        return docs
+    
+    """
+    Old execution
+    
     if output_type == "Document":
         return CSVLoader(file_path=paths["closed_incidents"]).load()
     elif output_type == "DataFrame":
         return pd.read_csv(paths["closed_incidents"])
     else:
         raise ValueError(f"Invalid output type: {output_type}")
+    """

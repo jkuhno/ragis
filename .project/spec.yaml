@@ -118,5 +118,9 @@ execution:
     options: rw
   - type: host
     target: /data/test/
-    description: Mount for local test data
+    description: ""
+    options: ""
+  - type: volume
+    target: /data/tmp/
+    description: Temporary file handling
     options: ""
