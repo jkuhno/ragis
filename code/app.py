@@ -1,9 +1,10 @@
-import gradio as gr
 import os
+import gradio as gr
 
 import rag_module as rag
 import data_loader as loader
 import databases as db
+
 
 with gr.Blocks() as app:
     with gr.Row():

@@ -117,6 +117,6 @@ execution:
     description: Project directory
     options: rw
   - type: host
-    target: /data/scratch/
-    description: ""
+    target: /data/test/
+    description: Mount for local test data
     options: ""

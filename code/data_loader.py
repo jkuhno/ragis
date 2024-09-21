@@ -7,9 +7,9 @@ from langchain_community.document_loaders import CSVLoader
 # Absolute paths to dummy data
 # Edit this if paths change
 paths = {
-    "sample_inputs_path": "/data/scratch/sample_input/",
-    "closed_incidents": "/data/scratch/Closed Incidents/Closed_Incidents_1.csv",
-    "user_info": "/data/scratch/exportUsers_2024-9-13.csv"
+    "sample_inputs_path": "/data/test/sample_input/",
+    "closed_incidents": "/data/test/Closed Incidents/Closed_Incidents_1.csv",
+    "user_info": "/data/test/exportUsers_2024-9-13.csv"
 }
 
 # Hardcoded dummy inputs
