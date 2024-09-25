@@ -4,12 +4,16 @@ import gradio as gr
 import rag_module as rag
 import data_loader as loader
 import databases as db
+import kql_module as kql
+
+
 
 with gr.Blocks() as app:
     if not os.environ.get("NVIDIA_API_KEY", "").startswith("nvapi-"):
         raise gr.Error("Please set your NVIDIA API KEY in 'Environment ->  Secrets -> Add -> Name=NVIDIA_API_KEY, value=<your-api-key>'")
     
     input = gr.State()
+    #azure_client = gr.State()
     with gr.Row():
         with gr.Column(scale=2):
             input_display = gr.Dataframe(label="Input placeholder")
@@ -41,7 +45,9 @@ with gr.Blocks() as app:
                 initiate_input_btn2 = gr.Button("Initiate input incident")
                 
             with gr.Tab("Azure connection"):
-                btn = gr.Button("test")
+                workspace_id = gr.Textbox(label="Your Log Analytics workspace ID")
+                azure_connection_btn = gr.Button("Query through KQL")
+                kql_response = gr.Dataframe(label="KQL query results")
     
     
     # tab = "dummy" or import"
@@ -73,6 +79,10 @@ with gr.Blocks() as app:
     def initiate_input(input_):
         x = loader.get_input_as_pd(input_)
         return x, input_
+
+
+    def query_azure(id):
+        return kql.response_as_df(id)
         
     
     # Dummy data
@@ -86,6 +96,9 @@ with gr.Blocks() as app:
     clear_vdb_btn2.click(fn=clear_vectorstore, inputs=[], outputs=[initiate_vdb_btn, document_upload_btn, clear_vdb_btn1, clear_vdb_btn2])
 
     initiate_input_btn2.click(fn=initiate_input, inputs=input_import, outputs=[input_display, input])
+
+    # Azure integration
+    azure_connection_btn.click(fn=query_azure, inputs=workspace_id, outputs=kql_response)
     
     # Generate summary
     generate_btn.click(fn=rag.generate, inputs=input, outputs=[output, debug_metadata, debug_page])

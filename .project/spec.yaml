@@ -111,6 +111,12 @@ execution:
   secrets:
   - variable: NVIDIA_API_KEY
     description: ""
+  - variable: AZURE_CLIENT_ID
+    description: Client ID (Application ID)
+  - variable: AZURE_TENANT_ID
+    description: ""
+  - variable: AZURE_CLIENT_SECRET
+    description: ""
   mounts:
   - type: project
     target: /project/
