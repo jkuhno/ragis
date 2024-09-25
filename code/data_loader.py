@@ -6,43 +6,22 @@ import test_data
 # Module for data loading
 # Dummy data is hard coded in test_data
 
-# Absolute paths to dummy data
-# Edit this if paths change
-paths = {
-    "sample_inputs_path": "/data/test/sample_input/",
-    "closed_incidents": "/data/test/Closed Incidents/Closed_Incidents_1.csv",
-    "user_info": "/data/test/exportUsers_2024-9-13.csv"
-}
-
-# Hardcoded dummy inputs
-# Edit when changing or adding sample alerts
-# "name" is what appears in the UI choice, keep the key and "name" the same
-sample_inputs = {
-    "Bill_CA": {
-        "name": "Bill_CA",
-        "filename": "LoginOutsideFinland_Bill_CA.csv"
-    },
-    "Bill_US": {
-        "name": "Bill_US",
-        "filename": "LoginOutsideFinland_Bill_US.csv"
-    },
-    "Joel_CA": {
-        "name": "Joel_CA",
-        "filename": "LoginOutsideFinland_Joel.csv"
-    }
-}
 
 # Provide the sample alert UI names in a list
 dummy_incident_list = test_data.get_sample_alerts("list")
 
+# Return a list containing lists of documents, one inner list per imported file path
 def get_context_from_file(path):
     docs = []
     for i in path:
-        docs.append(CSVLoader(file_path=i).load()[0])
+        df = pd.read_csv(i, index_col=[0])
+        df = df.dropna(axis=1, how="all")
+        df.to_csv(i)
+        docs.append(CSVLoader(file_path=i).load())
     return docs
 
 # Load and return the sample alert as LangChain Document, input_name is the choice from UI made by user (value from "dummy_incident_list")
-def get_dummy_input(input_name):
+def get_input_alert(input_name):
     if input_name in dummy_incident_list:
         # as pandas df
         input = test_data.get_sample_alerts(input_name)

@@ -21,7 +21,7 @@ def generate(input):
     input_variables=["incident", "documents"],
     )
 
-    incident = loader.get_dummy_input(input)
+    incident = loader.get_input_alert(input)
 
     retriever = databases.get_retriever()
     context = retriever.invoke(incident.page_content)
@@ -47,8 +47,14 @@ def generate(input):
     rag_chain = prompt | llm | StrOutputParser()
 
     generation = rag_chain.invoke(invoker)
-    
-    return generation
+
+    l = []
+    x = []
+    for i in context:
+        l.append(i.metadata)
+        x.append(i.page_content)
+        
+    return generation, l, x
 
 
 """

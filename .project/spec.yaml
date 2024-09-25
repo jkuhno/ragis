@@ -116,11 +116,11 @@ execution:
     target: /project/
     description: Project directory
     options: rw
-  - type: host
-    target: /data/test/
-    description: ""
-    options: ""
   - type: volume
     target: /data/tmp/
     description: Temporary file handling
+    options: ""
+  - type: host
+    target: /data/test/data/
+    description: ""
     options: ""

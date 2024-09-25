@@ -13,6 +13,9 @@ with gr.Blocks() as app:
             input_display = gr.Dataframe(label="Input placeholder")
             output = gr.Textbox(label="Output", lines=5)
             generate_btn = gr.Button("Generate")
+            debug_metadata = gr.Textbox(label="debug rows", lines=5)
+            debug_page = gr.Textbox(label="debug pages", lines=5)
+            
         with gr.Column(scale=1):
             
             # Tab for hardcoded dummy inputs for testing without data imports
@@ -34,10 +37,15 @@ with gr.Blocks() as app:
                     clear_vdb_btn2 = gr.Button(value="Cleared", interactive=False)
                 input_import = gr.File(label="Import your input csv")
                 initiate_input_btn2 = gr.Button("Initiate input incident")
-
+                
+            with gr.Tab("Azure connection"):
+                btn = gr.Button("test")
+    
     
     # tab = "dummy" or import"
     def load_vectorstore(tab, path=" "):
+        print(tab)
+        print(path)
         if tab == "Initiate vector database":
             db.load_context("dummy")
         elif tab == "Initiate vetor database with documents":
@@ -79,7 +87,7 @@ with gr.Blocks() as app:
     initiate_input_btn2.click(fn=initiate_input, inputs=input_import, outputs=[input_display, input])
     
     # Generate summary
-    generate_btn.click(fn=rag.generate, inputs=input, outputs=output)
+    generate_btn.click(fn=rag.generate, inputs=input, outputs=[output, debug_metadata, debug_page])
 
 
 proxy_prefix = os.environ.get("PROXY_PREFIX")
