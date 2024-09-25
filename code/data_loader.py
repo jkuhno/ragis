@@ -35,13 +35,21 @@ sample_inputs = {
 # Provide the sample alert UI names in a list
 dummy_incident_list = test_data.get_sample_alerts("list")
 
+def get_context_from_file(path):
+    docs = []
+    for i in path:
+        docs.append(CSVLoader(file_path=i).load()[0])
+    return docs
 
 # Load and return the sample alert as LangChain Document, input_name is the choice from UI made by user (value from "dummy_incident_list")
 def get_dummy_input(input_name):
-    # as pandas df
-    input = test_data.get_sample_alerts(input_name)
-    input.to_csv(f'/data/tmp/alert_{input_name}.csv')
-    return CSVLoader(file_path=f'/data/tmp/alert_{input_name}.csv').load()[0]
+    if input_name in dummy_incident_list:
+        # as pandas df
+        input = test_data.get_sample_alerts(input_name)
+        input.to_csv(f'/data/tmp/alert_{input_name}.csv')
+        return CSVLoader(file_path=f'/data/tmp/alert_{input_name}.csv').load()[0]
+    else:
+        return CSVLoader(file_path=input_name).load()[0]
     
     """
     Old execution
@@ -58,7 +66,12 @@ def get_dummy_input(input_name):
 
 # Load and return the sample alert as Pandas DataFrame, input_name is the choice from UI made by user (value from "dummy_incident_list")
 def get_input_as_pd(input_name):
-    return test_data.get_sample_alerts(input_name)
+    if input_name in dummy_incident_list:
+        return test_data.get_sample_alerts(input_name)
+    else:
+        return pd.read_csv(input_name)
+    
+    
     
     """
     Old execution
