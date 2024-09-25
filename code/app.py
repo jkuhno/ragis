@@ -5,8 +5,10 @@ import rag_module as rag
 import data_loader as loader
 import databases as db
 
-
 with gr.Blocks() as app:
+    if not os.environ.get("NVIDIA_API_KEY", "").startswith("nvapi-"):
+        raise gr.Error("Please set your NVIDIA API KEY in 'Environment ->  Secrets -> Add -> Name=NVIDIA_API_KEY, value=<your-api-key>'")
+    
     input = gr.State()
     with gr.Row():
         with gr.Column(scale=2):
@@ -44,8 +46,7 @@ with gr.Blocks() as app:
     
     # tab = "dummy" or import"
     def load_vectorstore(tab, path=" "):
-        print(tab)
-        print(path)
+        db.clear()
         if tab == "Initiate vector database":
             db.load_context("dummy")
         elif tab == "Initiate vetor database with documents":
