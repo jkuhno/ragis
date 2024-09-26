@@ -48,6 +48,7 @@ def generate(input):
 
     generation = rag_chain.invoke(invoker)
 
+    # Testing and debugging help
     l = []
     x = []
     for i in context:
