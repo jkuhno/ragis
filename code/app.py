@@ -45,9 +45,14 @@ with gr.Blocks() as app:
                 initiate_input_btn2 = gr.Button("Initiate input incident")
                 
             with gr.Tab("Azure connection"):
-                workspace_id = gr.Textbox(label="Your Log Analytics workspace ID")
+                workspace_id = gr.Textbox(label="Your Log Analytics workspace ID", value="1bffa9d3-05ed-4784-8a15-2dc8d257b039")
                 azure_connection_btn = gr.Button("Query through KQL")
                 kql_response = gr.Dataframe(label="KQL query results")
+                with gr.Accordion(label="Use a custom query", open=False):
+                    gr.Markdown("Used for custom KQL queries. Use the first box to query context, and the second to query alerts you want to summarize.")
+                    custom_context = gr.Textbox(label="Context documents")
+                    custom_alert = gr.Textbox(label="Alerts for analysis")
+                    custom_query_btn = gr.Button(value="Query")
     
     
     # tab = "dummy" or import"
