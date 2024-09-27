@@ -47,31 +47,34 @@ with gr.Blocks() as app:
                 workspace_id = gr.Textbox(label="Your Log Analytics workspace ID", value="1bffa9d3-05ed-4784-8a15-2dc8d257b039")
                 default_query_group = gr.CheckboxGroup(choices=["Closed incidents", "Users"], value="Closed incidents", label="Queries", info="Select at least one")
                 default_query_btn = gr.Button("Use a default query")
-                
+
                 with gr.Accordion(label="Use a custom query", open=False):
-                    gr.Markdown("Used for custom KQL queries. Use the first box to query context, and the second to query alerts you want to summarize.")
-                    custom_context = gr.Textbox(label="Context documents")
-                    custom_alert = gr.Textbox(label="Alerts for analysis")
+                    gr.Markdown("Used for custom KQL queries. Use the first box to query context, and the second to query alerts you want to summarize. WARNING! Must include 'AlertName' and 'DisplayName' fields in input alert query.")
+                    custom_context = gr.Textbox(label="Context documents", value=kql.KQL_QUERY_CLOSED)
+                    custom_alert = gr.Textbox(label="Alerts for analysis", value=kql.KQL_QUERY_ALERTS)
                     custom_query_btn = gr.Button(value="Query")
 
                 gr.Markdown("Display query results")
-                response_dropdown = gr.Dropdown([], visible=False)
-                kql_response = gr.Dataframe()
+                response_box = gr.Textbox(label="Docs queried", lines=5)
                 with gr.Row():
                     kql_upload_btn = gr.Button("Initiate vetor database with Azure docs")
                     clear_vdb_btn3 = gr.Button(value="Cleared", interactive=False)
 
-                input_query_radio = gr.Radio(choices=["Default inputs", "Custom"], label="Choose input incident query type")
+                gr.Markdown("Input alerts")
                 input_dropdown = gr.Dropdown([], label="Queried inputs")
-                
+                initiate_input_btn3 = gr.Button("Initiate input incident")
+                  
     
     # tab = "dummy" or import"
-    def load_vectorstore(tab, path=" "):
+    def load_vectorstore(tab, path=""):
         db.clear()
-        if tab == "Initiate vector database":
-            db.load_context("dummy")
-        elif tab == "Initiate vetor database with documents" or "Initiate vetor database with Azure docs":
-            db.load_context("import", path)
+        try:
+            if tab == "Initiate vector database":
+                db.load_context("dummy")
+            elif tab == "Initiate vetor database with documents" or "Initiate vetor database with Azure docs":
+                db.load_context("import", path)
+        except ValueError as error:
+            raise gr.Error(error)
 
         
         return {
@@ -104,13 +107,31 @@ with gr.Blocks() as app:
     # id: Log Analytis workspace id
     # query: queries made from the UI, default is what user checks from ["Closed incidents", "Users"]
     # old_dropdown: Populating the dropdown component requires the component to be passed as argument to the function. Gradio things.
-    def query_azure(id, query, old_dropdown):
+    def default_query_azure(id, query, old_dropdown):
+        # Context documents
         responses = []
         for i in query:
             response = kql.get_response(id, i)
             responses.append(response)
-        csvs = loader.kql_response_as_csv(responses)
-        return gr.Dropdown(csvs, visible=True), csvs
+        docs_csvs = loader.kql_response_as_csv(responses, query)
+
+        # Input alerts
+        inputs = [kql.get_response(id, "Inputs")]
+        inputs = loader.kql_input_alert_tuple(inputs)
+        
+        return docs_csvs, gr.Dropdown(inputs), docs_csvs
+
+    
+    def custom_query_azure(id, context_query, input_query, old_dropdown):
+        # Context documents
+        context = [kql.get_response(id, context_query)]
+        docs_csvs = loader.kql_response_as_csv(context, "custom")
+
+        # Input alerts
+        inputs = [kql.get_response(id, input_query)]
+        inputs = loader.kql_input_alert_tuple(inputs)
+        
+        return docs_csvs, gr.Dropdown(inputs), docs_csvs
 
     
     # Dummy data
@@ -128,13 +149,14 @@ with gr.Blocks() as app:
 
     
     # Azure integration
-    default_query_btn.click(fn=query_azure, inputs=[workspace_id, default_query_group, response_dropdown], outputs=[response_dropdown, azure_context_path])
-    response_dropdown.input(fn=lambda input: input, inputs=response_dropdown, outputs=kql_response)
+    default_query_btn.click(fn=default_query_azure, inputs=[workspace_id, default_query_group, input_dropdown], outputs=[response_box, input_dropdown, azure_context_path])
     
     kql_upload_btn.click(fn=load_vectorstore, inputs=[kql_upload_btn, azure_context_path], outputs=[initiate_vdb_btn, document_upload_btn, kql_upload_btn, clear_vdb_btn1, clear_vdb_btn2, clear_vdb_btn3])
     clear_vdb_btn3.click(fn=clear_vectorstore, inputs=[], outputs=[initiate_vdb_btn, document_upload_btn, kql_upload_btn, clear_vdb_btn1, clear_vdb_btn2, clear_vdb_btn3])
 
-    input_query_btn.click(fn=query_azure, inputs=[workspace_id, default_query_group, response_dropdown], outputs=[response_dropdown, azure_context_path])
+    initiate_input_btn3.click(fn=initiate_input, inputs=input_dropdown, outputs=[input_display, input])
+
+    custom_query_btn.click(fn=custom_query_azure, inputs=[workspace_id, custom_context, custom_alert, input_dropdown], outputs=[response_box, input_dropdown, azure_context_path])
     
     # Generate summary
     generate_btn.click(fn=rag.generate, inputs=input, outputs=[output, debug_metadata, debug_page])

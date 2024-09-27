@@ -4,7 +4,7 @@ from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 import data_loader as loader
 
 
-def load_context(tab, path=" "):
+def load_context(tab, path=""):
     if tab == "dummy":
         docs = loader.get_dummy_users() + loader.get_dummy_context()
     elif tab == "import":
