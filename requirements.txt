@@ -8,3 +8,5 @@ pandas
 gradio==4.43.0
 azure-monitor-query
 azure-identity
+msgraph-sdk
+asyncio
