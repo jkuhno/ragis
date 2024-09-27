@@ -3,10 +3,12 @@ from azure.monitor.query import LogsQueryClient
 from datetime import timedelta
 import pandas as pd
 
+# Azure connections
 
+
+# Default KQL for context querying
 KQL_QUERY_CLOSED = """
 SecurityIncident
-| where TimeGenerated > ago(30d)
 | where Status != "New"
 | extend AlertId = tostring(AlertIds[0])
 | project TimeGenerated, Title, Description, Severity, Status, AlertId, IncidentNumber
@@ -37,7 +39,7 @@ SecurityAlert
 # Authenticate via envs
 # Return LogsQueryResult object
 # https://learn.microsoft.com/en-gb/python/api/azure-monitor-query/azure.monitor.query.logsqueryresult?view=azure-python-preview
-def get_response(id, query_input):
+def get_response(id, query_input, time_span):
     if query_input == "Closed incidents":
         query_ = KQL_QUERY_CLOSED
     elif query_input == "Users":
@@ -52,7 +54,7 @@ def get_response(id, query_input):
     response = client.query_workspace(
         workspace_id=id,
         query=query_,
-        timespan=timedelta(days=4)
+        timespan=timedelta(days=time_span)
     )
 
     return response

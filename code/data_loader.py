@@ -11,6 +11,12 @@ import kql_module as kql
 # Provide the sample alert UI names in a list
 dummy_incident_list = test_data.get_sample_alerts("list")
 
+
+# Converts a response from Log Analytics kql alert query into a list of tuples [(friendly_alert_name, csv_path),...]
+#
+#     input_response: LogsQueryClient.query_workspace response(s) as a list
+#
+#     return: list of tuples [(friendly_name, csv_path),...]
 def kql_input_alert_tuple(input_response):
     df = response_as_df(input_response[0])
     series_list = [row for row in df[0].iterrows()]
@@ -28,6 +34,12 @@ def kql_input_alert_tuple(input_response):
     return l
 
 
+# Converts a list of responses from Log Analytics kql query into csvs
+# 
+#     responses: list of responses
+#     query_name: a list of strings indicating the name of the document 
+#
+#     return: list of csv file paths
 def kql_response_as_csv(responses, query_name):
     df_list = []
     for i in responses:
@@ -40,6 +52,11 @@ def kql_response_as_csv(responses, query_name):
     return paths_list
         
 
+# Convert a kql response to a Pandas DataFrame
+#
+#     response: LogsQueryClient.query_workspace response
+#
+#     return: list of all response tables as DataFrames
 def response_as_df(response):
     data_list = []
     for table in response.tables:
