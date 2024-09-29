@@ -9,27 +9,44 @@ import entra_id
 import asyncio
 
 
+css = """
+button {
+    background-color: #69B84D;
+    color: white;
+}
+
+button:hover {
+    background-color: #7CD15D;
+}
+"""
+
+
 # Main application. Holds the Gradio UI functionality
 
 if not os.environ.get("NVIDIA_API_KEY", "").startswith("nvapi-"):
     raise gr.Error("Please set your NVIDIA API KEY in 'Environment ->  Secrets -> Add -> Name=NVIDIA_API_KEY, value=<your-api-key>'")
 
 
+def hide_success(success):
+    return gr.Markdown("", visible=False)
+    
+
 def input_query_azure(id, old_dropdown, timespan):
     inputs = [kql.get_response(id, "Inputs", timespan)]
     inputs = loader.kql_input_alert_tuple(inputs)
-    return gr.Dropdown(inputs, value=inputs[0][0]), inputs
+    return gr.Dropdown(inputs, label="Queried inputs", visible=True), inputs
 
 
-def load_vectorstore(path=""):
+def load_vectorstore(success, path=""):
     db.clear()
     try:
         db.load_context("import", path)
+        return gr.Markdown("Success initiating vector database 👍", visible=True)
     except ValueError as error:
         raise gr.Error(error)
 
 
-def default_query_azure(id, query):
+def default_query_azure(id, query, success):
     docs_csvs = []
     if "Closed incidents" in query:
         response = [kql.get_response(id, "Closed incidents", 30)]
@@ -39,8 +56,8 @@ def default_query_azure(id, query):
         docs_csvs.append(asyncio.run(entra_id.get_users("csv")))
     
     # initiate the vector database
-    load_vectorstore(docs_csvs)
-    return docs_csvs
+    markdown = load_vectorstore(success, docs_csvs)
+    return docs_csvs, markdown
 
 
 def initiate_input(input_):
@@ -52,10 +69,12 @@ def initiate_input(input_):
 ##########################################################################################
 with gr.Blocks() as azure:
     input = gr.State()
+    #show_success = gr.State(False)
     
     gr.Markdown(
         """
-        # RAGIS
+        # RAGIS, as part of:
+        ![HackAI - Dell and NVIDIA Challenge](https://cdn.prod.website-files.com/626554fdd71f1cfcda56b4ed/66eba64c6f24e99e67b7197d_oxZwjSqecJzSWKDjMWYobWWa6wZM2KWZOt1witMjeyg.webp)
         Start by populating the backend with company documents.
         After that, select an alert to analyze below.
         """)
@@ -66,7 +85,7 @@ with gr.Blocks() as azure:
                 query_time = gr.Slider(1, 30, value=4, step=1, label="Alert query timespan", info="(in days)")
                 search_alerts = gr.Button("Search alerts")
                 
-            input_dropdown = gr.Dropdown([], label="Queried inputs")
+            input_dropdown = gr.Dropdown([], visible=False)
             generate_btn = gr.Button("Generate")
             output = gr.Textbox(label="Output", lines=5)
 
@@ -77,7 +96,8 @@ with gr.Blocks() as azure:
         with gr.Column(scale=1, variant='compact'):     
             workspace_id = gr.Textbox(label="Your Log Analytics workspace ID", value="1bffa9d3-05ed-4784-8a15-2dc8d257b039")
             default_query_group = gr.CheckboxGroup(choices=["Closed incidents", "Users"], value="Closed incidents", label="Queries", info="Select at least one")
-            default_query_btn = gr.Button("Query 👍👍")                  
+            default_query_btn = gr.Button("Query")  
+            success = gr.Markdown("", visible=False)
 
             with gr.Accordion(label="Data inspector", open=False):
                 gr.Markdown("Context documents")
@@ -88,8 +108,9 @@ with gr.Blocks() as azure:
 
     # Event listeners
     search_alerts.click(fn=input_query_azure, inputs=[workspace_id, input_dropdown, query_time], outputs=[input_dropdown, debug_metadata])
-    
-    default_query_btn.click(fn=default_query_azure, inputs=[workspace_id, default_query_group], outputs=[context_display])
+
+    default_query_btn.click(fn=hide_success, inputs=[success], outputs=[success])
+    default_query_btn.click(fn=default_query_azure, inputs=[workspace_id, default_query_group, success], outputs=[context_display, success])
     
     input_dropdown.select(fn=initiate_input, inputs=input_dropdown, outputs=[input_display, input])
     
@@ -121,14 +142,15 @@ with gr.Blocks() as csvs:
         with gr.Column(scale=1, variant='compact'):
             document_import = gr.File(label="Import your context csv files", file_count="multiple")
             document_upload_btn = gr.Button("Initiate vetor database with documents")
+            success = gr.Markdown("", visible=False)
 
-            with gr.Accordion(label="Data inspector", open=False):
-                gr.Markdown("Input alerts")
+            with gr.Accordion(label="Input data inspector", open=False):
                 input_display = gr.Dataframe(label="Input alert")   
 
     
     # Event listeners
-    document_upload_btn.click(fn=load_vectorstore, inputs=[document_import], outputs=[])
+    document_upload_btn.click(fn=hide_success, inputs=[success], outputs=[success])
+    document_upload_btn.click(fn=load_vectorstore, inputs=[success, document_import], outputs=[success])
 
     input_import.change(fn=initiate_input, inputs=input_import, outputs=[input_display, input])
 
@@ -140,7 +162,7 @@ with gr.Blocks() as csvs:
 
 
 # Put the UI in a tabbed interface, representing two usage scenarios
-app = gr.TabbedInterface(interface_list=[azure, csvs], tab_names=["Azure connection", "Import csv"], theme="monochrome")
+app = gr.TabbedInterface(interface_list=[azure, csvs], tab_names=["Azure connection", "Import csv"], theme="monochrome", css=css)
 
 proxy_prefix = os.environ.get("PROXY_PREFIX")
 app.launch(server_name="0.0.0.0", server_port=8080, root_path=proxy_prefix)
