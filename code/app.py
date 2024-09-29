@@ -5,6 +5,8 @@ import rag_module as rag
 import data_loader as loader
 import databases as db
 import kql_module as kql
+import entra_id
+import asyncio
 
 
 # Main application. Holds the Gradio UI functionality
@@ -28,14 +30,13 @@ def load_vectorstore(path=""):
 
 
 def default_query_azure(id, query):
-    responses = []
-    for i in query:
-        response = kql.get_response(id, i, 30)
-        responses.append(response)
-    docs_csvs = loader.kql_response_as_csv(responses, query)
+    docs_csvs = []
+    if "Closed incidents" in query:
+        response = [kql.get_response(id, "Closed incidents", 30)]
+        docs_csvs.append(loader.kql_response_as_csv(response, query)[0])
 
     if "Users" in query:
-        
+        docs_csvs.append(asyncio.run(entra_id.get_users("csv")))
     
     # initiate the vector database
     load_vectorstore(docs_csvs)
@@ -76,7 +77,7 @@ with gr.Blocks() as azure:
         with gr.Column(scale=1, variant='compact'):     
             workspace_id = gr.Textbox(label="Your Log Analytics workspace ID", value="1bffa9d3-05ed-4784-8a15-2dc8d257b039")
             default_query_group = gr.CheckboxGroup(choices=["Closed incidents", "Users"], value="Closed incidents", label="Queries", info="Select at least one")
-            default_query_btn = gr.Button("Query")                  
+            default_query_btn = gr.Button("Query 👍👍")                  
 
             with gr.Accordion(label="Data inspector", open=False):
                 gr.Markdown("Context documents")
@@ -132,7 +133,11 @@ with gr.Blocks() as csvs:
     input_import.change(fn=initiate_input, inputs=input_import, outputs=[input_display, input])
 
     generate_btn.click(fn=rag.generate, inputs=input, outputs=[output, debug_metadata, debug_page])
-                
+
+
+##########################################################################################
+##########################################################################################
+
 
 # Put the UI in a tabbed interface, representing two usage scenarios
 app = gr.TabbedInterface(interface_list=[azure, csvs], tab_names=["Azure connection", "Import csv"], theme="base")
