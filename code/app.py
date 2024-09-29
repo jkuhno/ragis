@@ -18,7 +18,7 @@ if not os.environ.get("NVIDIA_API_KEY", "").startswith("nvapi-"):
 def input_query_azure(id, old_dropdown, timespan):
     inputs = [kql.get_response(id, "Inputs", timespan)]
     inputs = loader.kql_input_alert_tuple(inputs)
-    return gr.Dropdown(inputs), inputs
+    return gr.Dropdown(inputs, value=inputs[0][0]), inputs
 
 
 def load_vectorstore(path=""):
@@ -140,7 +140,7 @@ with gr.Blocks() as csvs:
 
 
 # Put the UI in a tabbed interface, representing two usage scenarios
-app = gr.TabbedInterface(interface_list=[azure, csvs], tab_names=["Azure connection", "Import csv"], theme="base")
+app = gr.TabbedInterface(interface_list=[azure, csvs], tab_names=["Azure connection", "Import csv"], theme="monochrome")
 
 proxy_prefix = os.environ.get("PROXY_PREFIX")
 app.launch(server_name="0.0.0.0", server_port=8080, root_path=proxy_prefix)
