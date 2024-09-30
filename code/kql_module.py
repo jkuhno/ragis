@@ -5,33 +5,38 @@ from datetime import timedelta
 # Azure connections
 
 
-# Default KQL for context querying
+# Default KQL for context closed incidents querying
 KQL_QUERY_CLOSED = """
 SecurityIncident
-| where Status != "New"
+| where Status == "Closed"
 | extend AlertId = tostring(AlertIds[0])
-| project TimeGenerated, Title, Description, Severity, Status, AlertId, IncidentNumber
-| join kind=rightanti (
+| project TimeGenerated, IncidentNumber, IncidentTitle=Title, IncidentDescription=Description, IncidentSeverity=Severity, Classification, ClassificationComment, ClassificationReason, ClosedTime, AlertId
+| join kind=inner (
 SecurityAlert
-| where TimeGenerated > ago(30d)
-| where AlertName == "User logged in outside of Finland"
-| extend props = parse_json(ExtendedProperties)
-| extend Location = tostring(props['Custom Details'])
 | extend Parse = parse_json(Entities)
-| extend DisplayName = tostring(Parse.[0].Name)
-| extend IpAddress = tostring(Parse.[1].Address)
-) on $left.AlertId == $right.SystemAlertId
-| project TimeGenerated, AlertName, AlertSeverity, Description, DisplayName, IpAddress, Location
+| extend entities1 = tostring(Parse.[0])
+| extend entities2 = tostring(Parse.[1])
+| extend properties = parse_json(ExtendedProperties)
+| extend Location = tostring(properties['Custom Details'])
+) on $left.AlertId==$right.SystemAlertId
+| project TimeGenerated, IncidentNumber, IncidentTitle, IncidentDescription, IncidentSeverity, Classification, ClassificationComment, ClassificationReason, ClosedTime, entities1, entities2, Location
 """
 
+# Query for new incidents
 KQL_QUERY_ALERTS = """
+SecurityIncident
+| where Status == "New"
+| extend AlertId = tostring(AlertIds[0])
+| project TimeGenerated, IncidentNumber, IncidentTitle=Title, IncidentDescription=Description, IncidentSeverity=Severity, IncidentStatus=Status, AlertId
+| join kind=inner (
 SecurityAlert
-| extend props = parse_json(ExtendedProperties)
-| extend Location = tostring(props['Custom Details'])
 | extend Parse = parse_json(Entities)
-| extend DisplayName = tostring(Parse.[0].Name)
-| extend IpAddress = tostring(Parse.[1].Address)
-| project TimeGenerated, AlertName, AlertSeverity, Description, DisplayName, IpAddress, Location
+| extend entities1 = tostring(Parse.[0])
+| extend entities2 = tostring(Parse.[1])
+| extend properties = parse_json(ExtendedProperties)
+| extend Location = tostring(properties['Custom Details'])
+) on $left.AlertId==$right.SystemAlertId
+| project TimeGenerated, IncidentNumber, IncidentTitle, IncidentDescription, IncidentSeverity, IncidentStatus, entities1, entities2, Location
 """
 
 

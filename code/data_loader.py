@@ -16,14 +16,14 @@ def kql_input_alert_tuple(input_response):
     l = []
     for tuples in series_list:
         l.append(pd.DataFrame(tuples[1]).T)
-    names = [items["DisplayName"].values[0] for items in l]
-    alert = [items["AlertName"].values[0] for items in l]
-    for idx, item in enumerate(alert):
-        alert[idx] = item.replace("User", names[idx])
+    incidentNumber = [items["IncidentNumber"].values[0] for items in l]
+    incidentTitle = [items["IncidentTitle"].values[0] for items in l]
+    for idx, item in enumerate(incidentTitle):
+        incidentTitle[idx] = str(incidentNumber[idx]) + f" {incidentTitle[idx]}"
     for idx, df in enumerate(l):
         df.to_csv(f'/data/tmp/azure_input_{idx}')
         l[idx] = f'/data/tmp/azure_input_{idx}'
-        l[idx] = (alert[idx], l[idx])
+        l[idx] = (incidentTitle[idx], l[idx])
     return l
 
 
