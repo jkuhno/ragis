@@ -117,7 +117,7 @@ with gr.Blocks() as azure:
                 <|eot_id|>
                 <|start_header_id|>assistant<|end_header_id|>""")
                 
-                search_type = gr.Radio(["similarity", "mmr"], label="Search type", info="MMR: Maximal marginal relevance optimizes for similarity to query AND diversity among selected documents.")
+                search_type = gr.Radio(["similarity", "mmr"], value="mmr", label="Search type", info="MMR: Maximal marginal relevance optimizes for similarity to query AND diversity among selected documents.")
                 k = gr.Slider(1, 10, value=4, step=1, label="k", info="Number of documents retrieved")
                 gr.Markdown("Use these with mmr")
                 lambda_mult = gr.Slider(0, 1, value=0.5, step=0.1, label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum. (Default: 0.5)")
