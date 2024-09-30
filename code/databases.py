@@ -4,12 +4,9 @@ from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 import data_loader as loader
 
 
-def load_context(tab, path=""):
-    if tab == "dummy":
-        docs = loader.get_dummy_users() + loader.get_dummy_context()
-    elif tab == "import":
-        docs = loader.get_context_from_file(path)
-        docs = [j for i in docs for j in i]
+def load_context(path=""):
+    docs = loader.get_context_from_file(path)
+    docs = [j for i in docs for j in i]
     
     vectorstore = Chroma.from_documents(
         documents=docs,

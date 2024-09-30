@@ -1,16 +1,9 @@
 import pandas as pd
 from langchain_community.document_loaders import CSVLoader
 
-import test_data
 import kql_module as kql
 
 # Module for transforming data from a format to another
-# Dummy data is hard coded in test_data
-
-
-# Provide the sample alert UI names in a list
-dummy_incident_list = test_data.get_sample_alerts("list")
-
 
 # Converts a response from Log Analytics kql alert query into a list of tuples [(friendly_alert_name, csv_path),...]
 #
@@ -84,42 +77,3 @@ def get_context_from_file(path):
             docs.append(CSVLoader(file_path=i).load())
         return docs
 
-
-# Load and return the sample alert as LangChain Document, input_name is the choice from UI made by user (value from "dummy_incident_list")
-def get_input_alert(input_name):
-    if input_name in dummy_incident_list:
-        # as pandas df
-        input = test_data.get_sample_alerts(input_name)
-        input.to_csv(f'/data/tmp/alert_{input_name}.csv')
-        return CSVLoader(file_path=f'/data/tmp/alert_{input_name}.csv').load()[0]
-    else:
-        return CSVLoader(file_path=input_name).load()[0]
-    
-
-# Load and return the sample alert as Pandas DataFrame, input_name is the choice from UI made by user (value from "dummy_incident_list")
-def get_input_as_pd(input_name):
-    if input_name in dummy_incident_list:
-        return test_data.get_sample_alerts(input_name)
-    else:
-        return pd.read_csv(input_name)
-    
-    
-# Return user information as either LangChain Document or Pandas DataFrame, corresponding to the "output_type"
-def get_dummy_users(output_type = "Document"):
-    users = test_data.get_sample_users()
-    if output_type == "Document":
-        users.to_csv('/data/tmp/users.csv')
-        return CSVLoader(file_path='/data/tmp/users.csv').load()
-    elif output_type == "DataFrame":
-        return users
-
-
-# Return dummy closed incidents, either LangChain Document or Pandas DataFrame
-def get_dummy_context(output_type = "Document"):
-    docs = test_data.get_closed_incidents()
-    if output_type == "Document":
-        docs.to_csv('/data/tmp/docs.csv')
-        return CSVLoader(file_path='/data/tmp/docs.csv').load()
-    elif output_type == "DataFrame":
-        return docs
-    

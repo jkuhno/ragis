@@ -1,8 +1,8 @@
 from langchain.prompts import PromptTemplate
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_core.output_parsers import StrOutputParser
+from langchain_community.document_loaders import CSVLoader
 
-import data_loader as loader
 import databases
 
 def generate(input):
@@ -21,7 +21,7 @@ def generate(input):
     input_variables=["incident", "documents"],
     )
 
-    incident = loader.get_input_alert(input)
+    incident = CSVLoader(file_path=input).load()[0]
 
     retriever = databases.get_retriever()
     context = retriever.invoke(incident.page_content)

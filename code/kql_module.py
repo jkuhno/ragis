@@ -1,7 +1,6 @@
 from azure.identity import DefaultAzureCredential
 from azure.monitor.query import LogsQueryClient
 from datetime import timedelta
-import pandas as pd
 
 # Azure connections
 

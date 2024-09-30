@@ -7,16 +7,28 @@ import databases as db
 import kql_module as kql
 import entra_id
 import asyncio
+import pandas as pd
 
+theme = gr.themes.Monochrome().set(
+    checkbox_label_background_fill="#69B84D",
+    checkbox_label_background_fill_hover="#7CD15D",
+    #checkbox_background_color_selected="#69B84D",
+    #checkbox_background_color_dark="#69B84D",
+    #checkbox_background_color_selected_dark="#69B84D",
+)
 
 css = """
-button {
+.btn {
     background-color: #69B84D;
     color: white;
 }
 
-button:hover {
+.btn:hover {
     background-color: #7CD15D;
+}
+
+checkbox {
+    background-color: #69B84D; !important
 }
 """
 
@@ -40,7 +52,7 @@ def input_query_azure(id, old_dropdown, timespan):
 def load_vectorstore(success, path=""):
     db.clear()
     try:
-        db.load_context("import", path)
+        db.load_context(path)
         return gr.Markdown("Success initiating vector database 👍", visible=True)
     except ValueError as error:
         raise gr.Error(error)
@@ -61,7 +73,7 @@ def default_query_azure(id, query, success):
 
 
 def initiate_input(input_):
-    x = loader.get_input_as_pd(input_)
+    x = pd.read_csv(input_)
     return x, input_
     
 
@@ -69,13 +81,11 @@ def initiate_input(input_):
 ##########################################################################################
 with gr.Blocks() as azure:
     input = gr.State()
-    #show_success = gr.State(False)
     
     gr.Markdown(
         """
-        # RAGIS, as part of:
-        ![HackAI - Dell and NVIDIA Challenge](https://cdn.prod.website-files.com/626554fdd71f1cfcda56b4ed/66eba64c6f24e99e67b7197d_oxZwjSqecJzSWKDjMWYobWWa6wZM2KWZOt1witMjeyg.webp)
-        Start by populating the backend with company documents.
+        # RAGIS
+        Start by populating the backend with company documents.\n
         After that, select an alert to analyze below.
         """)
     
@@ -83,10 +93,10 @@ with gr.Blocks() as azure:
         with gr.Column(scale=2, variant='panel'):
             with gr.Row():
                 query_time = gr.Slider(1, 30, value=4, step=1, label="Alert query timespan", info="(in days)")
-                search_alerts = gr.Button("Search alerts")
+                search_alerts = gr.Button("Search alerts", elem_classes="btn")
                 
             input_dropdown = gr.Dropdown([], visible=False)
-            generate_btn = gr.Button("Generate")
+            generate_btn = gr.Button("Generate", elem_classes="btn")
             output = gr.Textbox(label="Output", lines=5)
 
             with gr.Accordion(label="debug", open=False):
@@ -96,7 +106,7 @@ with gr.Blocks() as azure:
         with gr.Column(scale=1, variant='compact'):     
             workspace_id = gr.Textbox(label="Your Log Analytics workspace ID", value="1bffa9d3-05ed-4784-8a15-2dc8d257b039")
             default_query_group = gr.CheckboxGroup(choices=["Closed incidents", "Users"], value="Closed incidents", label="Queries", info="Select at least one")
-            default_query_btn = gr.Button("Query")  
+            default_query_btn = gr.Button("Query", elem_classes="btn")  
             success = gr.Markdown("", visible=False)
 
             with gr.Accordion(label="Data inspector", open=False):
@@ -132,7 +142,7 @@ with gr.Blocks() as csvs:
     with gr.Row():
         with gr.Column(scale=2, variant='panel'):
             input_import = gr.File(label="Import your input csv")    
-            generate_btn = gr.Button("Generate")
+            generate_btn = gr.Button("Generate", elem_classes="btn")
             output = gr.Textbox(label="Output", lines=5)
             
             with gr.Accordion(label="debug", open=False):
@@ -141,7 +151,7 @@ with gr.Blocks() as csvs:
             
         with gr.Column(scale=1, variant='compact'):
             document_import = gr.File(label="Import your context csv files", file_count="multiple")
-            document_upload_btn = gr.Button("Initiate vetor database with documents")
+            document_upload_btn = gr.Button("Initiate vetor database with documents", elem_classes="btn")
             success = gr.Markdown("", visible=False)
 
             with gr.Accordion(label="Input data inspector", open=False):
@@ -162,7 +172,7 @@ with gr.Blocks() as csvs:
 
 
 # Put the UI in a tabbed interface, representing two usage scenarios
-app = gr.TabbedInterface(interface_list=[azure, csvs], tab_names=["Azure connection", "Import csv"], theme="monochrome", css=css)
+app = gr.TabbedInterface(interface_list=[azure, csvs], tab_names=["Azure connection", "Import csv"], theme=theme, css=css)
 
 proxy_prefix = os.environ.get("PROXY_PREFIX")
 app.launch(server_name="0.0.0.0", server_port=8080, root_path=proxy_prefix)
