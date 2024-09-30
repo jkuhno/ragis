@@ -9,6 +9,8 @@ import entra_id
 import asyncio
 import pandas as pd
 
+import simulatorGenerator
+
 theme = gr.themes.Monochrome().set(
     checkbox_label_background_fill="#69B84D",
     checkbox_label_background_fill_hover="#7CD15D",
@@ -102,6 +104,26 @@ with gr.Blocks() as azure:
             with gr.Accordion(label="debug", open=False):
                 debug_metadata = gr.Textbox(label="debug rows", lines=5)
                 debug_page = gr.Textbox(label="debug pages", lines=5)
+
+                template = gr.Textbox(label="Template", value="""
+                <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+                You are an assistant tasked to reason if an input incident is a true positive or a false positive. True positives are incidents that require more attention from the user, false positives usually mean no harm.
+                Use the company documents to logically decide if input incident is malicious or not. Flag malicious as true positive and logically acceptable as false positive.
+                The user wants a "true positive" or "false positive" prediction, a short summary of your reasoning and a list of key attributes you used for the reasoning.
+                <|eot_id|>
+                <|start_header_id|>user<|end_header_id|>
+                Here is the input incident: {incident}
+                Here are the company documents: {documents}
+                <|eot_id|>
+                <|start_header_id|>assistant<|end_header_id|>""")
+                
+                search_type = gr.Radio(["similarity", "mmr"], label="Search type", info="MMR: Maximal marginal relevance optimizes for similarity to query AND diversity among selected documents.")
+                k = gr.Slider(1, 10, value=4, step=1, label="k", info="Number of documents retrieved")
+                gr.Markdown("Use these with mmr")
+                lambda_mult = gr.Slider(0, 1, value=0.5, step=0.1, label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum. (Default: 0.5)")
+                fetch_k = gr.Slider(1, 50, value=19, step=1, label="fetch_k", info="Amount of documents to pass to MMR algorithm")
+                
+                simulator_btn = gr.Button("Generate", elem_classes="btn")
             
         with gr.Column(scale=1, variant='compact'):     
             workspace_id = gr.Textbox(label="Your Log Analytics workspace ID", value="1bffa9d3-05ed-4784-8a15-2dc8d257b039")
@@ -125,6 +147,7 @@ with gr.Blocks() as azure:
     input_dropdown.select(fn=initiate_input, inputs=input_dropdown, outputs=[input_display, input])
     
     generate_btn.click(fn=rag.generate, inputs=input, outputs=[output, debug_metadata, debug_page])
+    simulator_btn.click(fn=simulatorGenerator.generate, inputs=[input, template, search_type, k, lambda_mult, fetch_k], outputs=[output, debug_metadata, debug_page])
 
 
 ############################### CSV IMPORT INTERFACE #####################################

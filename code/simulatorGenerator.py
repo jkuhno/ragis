@@ -5,25 +5,16 @@ from langchain_community.document_loaders import CSVLoader
 
 import databases
 
-def generate(input):
+def generate(input, template_, search, k, mult, f_k):
     
     prompt = PromptTemplate(
-    template=""" <|begin_of_text|><|start_header_id|>system<|end_header_id|>
-    You are an assistant tasked to reason if an input incident is a true positive or a false positive. True positives are incidents that require more attention from the user, false positives usually mean no harm.
-    Use the company documents to logically decide if input incident is malicious or not. Flag malicious as true positive and logically acceptable as false positive.
-    The user wants a "true positive" or "false positive" prediction, a short summary of your reasoning and a list of key attributes you used for the reasoning.
-    <|eot_id|>
-    <|start_header_id|>user<|end_header_id|>
-    Here is the input incident: {incident}
-    Here are the company documents: {documents}
-    <|eot_id|>
-    <|start_header_id|>assistant<|end_header_id|>""",
+    template=template_,
     input_variables=["incident", "documents"],
     )
 
     incident = CSVLoader(file_path=input).load()[0]
 
-    retriever = databases.get_retriever()
+    retriever = databases.get_retriever_with_settings(search, k, mult, f_k)
     context = retriever.invoke(incident.page_content)
     
     # Chain input variables, keys match the input_variables in the PromptTemplate
