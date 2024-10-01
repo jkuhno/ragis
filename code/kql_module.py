@@ -19,7 +19,7 @@ SecurityAlert
 | extend properties = parse_json(ExtendedProperties)
 | extend CustomEntities = tostring(properties['Custom Details'])
 ) on $left.AlertId==$right.SystemAlertId
-| project TimeGenerated, IncidentNumber, IncidentTitle, IncidentDescription, IncidentSeverity, IncidentStatus, Entities, CustomEntities
+| project TimeGenerated, IncidentNumber, IncidentTitle, IncidentDescription, IncidentSeverity, IncidentStatus, Classification, ClassificationComment, ClassificationReason, ClosedTime, Entities, CustomEntities
 """
 
 # Query for new incidents
