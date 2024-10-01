@@ -10,16 +10,16 @@ KQL_QUERY_CLOSED = """
 SecurityIncident
 | where Status == "Closed"
 | extend AlertId = tostring(AlertIds[0])
-| project TimeGenerated, IncidentNumber, IncidentTitle=Title, IncidentDescription=Description, IncidentSeverity=Severity, Classification, ClassificationComment, ClassificationReason, ClosedTime, AlertId
+| project TimeGenerated, IncidentNumber, IncidentTitle=Title, IncidentDescription=Description, IncidentSeverity=Severity, IncidentStatus=Status, Classification, ClassificationComment, ClassificationReason, ClosedTime, AlertId
 | join kind=inner (
 SecurityAlert
 | extend Parse = parse_json(Entities)
 | extend entities1 = tostring(Parse.[0])
 | extend entities2 = tostring(Parse.[1])
 | extend properties = parse_json(ExtendedProperties)
-| extend Location = tostring(properties['Custom Details'])
+| extend CustomEntities = tostring(properties['Custom Details'])
 ) on $left.AlertId==$right.SystemAlertId
-| project TimeGenerated, IncidentNumber, IncidentTitle, IncidentDescription, IncidentSeverity, Classification, ClassificationComment, ClassificationReason, ClosedTime, entities1, entities2, Location
+| project TimeGenerated, IncidentNumber, IncidentTitle, IncidentDescription, IncidentSeverity, IncidentStatus, Entities, CustomEntities
 """
 
 # Query for new incidents
