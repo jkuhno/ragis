@@ -38,8 +38,11 @@ def generate(input, template_, search, k, mult, f_k, use_aug):
 
     incident = CSVLoader(file_path=input).load()[0]
 
-    retriever = databases.get_retriever_with_settings(search, k, mult, f_k)
-    
+    if search == "mmr":
+        retriever = databases.get_retriever_with_settings(search, k, mult, f_k)
+    else:
+        retriever = databases.get_retriever()
+        
     if use_aug:
         aug_incident = '; '.join(query_augmentation(incident.page_content))
         context = retriever.invoke(aug_incident)
