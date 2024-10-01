@@ -75,7 +75,7 @@ def default_query_azure(id, query, success):
 
 
 def initiate_input(input_):
-    x = pd.read_csv(input_)
+    x = pd.read_csv(input_, index_col=False)
     return x, input_
     
 
@@ -139,9 +139,9 @@ Here are the company documents: {documents}
                 
                 use_aug = gr.Checkbox(label="Use query augmentation")
                 search_type = gr.Radio(["similarity", "mmr"], value="mmr", label="Search type", info="MMR: Maximal marginal relevance optimizes for similarity to query AND diversity among selected documents.")
-                k = gr.Slider(1, 10, value=9, step=1, label="k", info="Number of documents retrieved")
+                k = gr.Slider(1, 10, value=5, step=1, label="k", info="Number of documents retrieved")
                 gr.Markdown("Use these with mmr")
-                lambda_mult = gr.Slider(0, 1, value=0.6, step=0.1, label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum. (Default: 0.5)")
+                lambda_mult = gr.Number(label="lambda_mult")#gr.Slider(0, 1, value=0.530, step=0.005, label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum. (Default: 0.5)")
                 fetch_k = gr.Slider(1, 50, value=50, step=1, label="fetch_k", info="Amount of documents to pass to MMR algorithm")
                 
                 simulator_btn = gr.Button("Generate", elem_classes="btn")
