@@ -62,12 +62,12 @@ def load_vectorstore(success, path=""):
 
 def default_query_azure(id, query, success):
     docs_csvs = []
+    if "Users" in query:
+        docs_csvs.append(asyncio.run(entra_id.get_users("csv")))
+    
     if "Closed incidents" in query:
         response = [kql.get_response(id, "Closed incidents", 30)]
         docs_csvs.append(loader.kql_response_as_csv(response, query)[0])
-
-    if "Users" in query:
-        docs_csvs.append(asyncio.run(entra_id.get_users("csv")))
     
     # initiate the vector database
     markdown = load_vectorstore(success, docs_csvs)
@@ -115,19 +115,21 @@ You are an intelligent security assistant tasked with determining if an input in
 
 ### Instructions:
 1. **Analyze the Incident**: Carefully evaluate the details of the input incident provided below.
-- Analyze the incident entities such as assigned role or location
 2. **Use Company Documents**: Utilize the accompanying company documents to gather context, evaluate threat indicators, and make your determination. Focus on attributes like:
-- User job title and department
-- Previous incidents that matches with the current incident
+   - User behavior anomalies
+   - Known malicious signatures
+   - Historical incident data
+   - **Job title and role appropriateness**: Check if the job title in the company documents matches the assigned role in the incident. If the job title does not warrant assigning a new privileged role, classify the incident as a "true positive."
 3. **Reasoning Process**:
-- Identify and explain any attributes from the documents that indicate whether the incident is malicious or benign.
-- If there are signs of malicious intent (e.g., matching known attack patterns), classify the incident as a "true positive."
-- If the incident shows benign characteristics (e.g., known safe IPs, normal user behavior from previous incidents), classify it as a "false positive."
+   - Identify and explain any attributes from the documents that indicate whether the incident is malicious or benign.
+   - If there are signs of malicious intent (e.g., matching known attack patterns, job title not matching privileged role assignment), classify the incident as a "true positive."
+   - If the incident shows benign characteristics (e.g., known safe IPs, normal user behavior), classify it as a "false positive."
 
 ### Response Format:
 1. **Classification**: Indicate whether the incident is a "true positive" or "false positive."
 2. **Reasoning**: Provide a short summary of your reasoning based on evidence from the incident and company documents.
 3. **Key Attributes**: List key indicators from the documents that influenced your decision.
+
 <|eot_id|>
 <|start_header_id|>user<|end_header_id|>
 Here is the input incident: {incident}
@@ -137,10 +139,10 @@ Here are the company documents: {documents}
                 
                 use_aug = gr.Checkbox(label="Use query augmentation")
                 search_type = gr.Radio(["similarity", "mmr"], value="mmr", label="Search type", info="MMR: Maximal marginal relevance optimizes for similarity to query AND diversity among selected documents.")
-                k = gr.Slider(1, 10, value=4, step=1, label="k", info="Number of documents retrieved")
+                k = gr.Slider(1, 10, value=9, step=1, label="k", info="Number of documents retrieved")
                 gr.Markdown("Use these with mmr")
-                lambda_mult = gr.Slider(0, 1, value=0.5, step=0.1, label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum. (Default: 0.5)")
-                fetch_k = gr.Slider(1, 50, value=19, step=1, label="fetch_k", info="Amount of documents to pass to MMR algorithm")
+                lambda_mult = gr.Slider(0, 1, value=0.6, step=0.1, label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum. (Default: 0.5)")
+                fetch_k = gr.Slider(1, 50, value=50, step=1, label="fetch_k", info="Amount of documents to pass to MMR algorithm")
                 
                 simulator_btn = gr.Button("Generate", elem_classes="btn")
             
