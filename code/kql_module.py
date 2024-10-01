@@ -24,20 +24,28 @@ SecurityAlert
 
 # Query for new incidents
 KQL_QUERY_ALERTS = """
-SecurityIncident
+let newIncidents = SecurityIncident
 | where Status == "New"
-| extend AlertId = tostring(AlertIds[0])
-| project TimeGenerated, IncidentNumber, IncidentTitle=Title, IncidentDescription=Description, IncidentSeverity=Severity, IncidentStatus=Status, AlertId
+| extend newAlertId = AlertIds[0]
+| project tostring(newAlertId), TimeGenerated, IncidentNumber, IncidentTitle=Title, IncidentDescription=Description, IncidentSeverity=Severity, IncidentStatus=Status;
+let closedIncidents = SecurityIncident
+| where Status == "Closed"
+| extend closeAlertId = AlertIds[0]
+| project tostring(closeAlertId);
+newIncidents
+| join kind=leftanti (closedIncidents) on $left.newAlertId==$right.closeAlertId
+| project TimeGenerated, IncidentNumber, IncidentTitle, IncidentDescription, IncidentSeverity, IncidentStatus, newAlertId
 | join kind=inner (
 SecurityAlert
 | extend Parse = parse_json(Entities)
 | extend entities1 = tostring(Parse.[0])
 | extend entities2 = tostring(Parse.[1])
 | extend properties = parse_json(ExtendedProperties)
-| extend Location = tostring(properties['Custom Details'])
-) on $left.AlertId==$right.SystemAlertId
-| project TimeGenerated, IncidentNumber, IncidentTitle, IncidentDescription, IncidentSeverity, IncidentStatus, entities1, entities2, Location
+| extend CustomEntities = tostring(properties['Custom Details'])
+) on $left.newAlertId==$right.SystemAlertId
+| project TimeGenerated, IncidentNumber, IncidentTitle, IncidentDescription, IncidentSeverity, IncidentStatus, Entities, CustomEntities
 """
+
 
 
 # Authenticate via envs

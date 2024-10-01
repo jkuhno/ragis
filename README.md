@@ -1,5 +1,5 @@
 # RAGIS (Retrieval-Augmented Generation Incident Summary)
-Our project, RAGIS (Retrieval-Augmented Generation Incident Summary), helps security analysts determine whether an incident is false or if the incident needs further investigation. It leverages generative AI and company data such as Microsoft Entra ID user details and previously closed incidents to make accurate predictions, saving valuable time and reducing the noise from false incidents.
+Our project, RAGIS (Retrieval-Augmented Generation Incident Summary), helps security analysts determine whether an incident is a false positive or if the incident needs further investigation. It leverages generative AI and company data such as Microsoft Entra ID user details and previously closed incidents to make accurate predictions, saving valuable time and reducing the noise from false incidents.
 
 ## Inspiration
 Security analysts often spend significant time investigating false positives, which can lead to inefficiencies. Studies show that nearly a third of their time is spent on incidents that pose no actual threat. This creates alert fatigue and slows down response times, motivating us to create a solution that reduces this burden and helps analysts focus on real security threats.
