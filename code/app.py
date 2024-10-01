@@ -117,6 +117,7 @@ with gr.Blocks() as azure:
                 <|eot_id|>
                 <|start_header_id|>assistant<|end_header_id|>""")
                 
+                use_aug = gr.Checkbox(label="Use query augmentation")
                 search_type = gr.Radio(["similarity", "mmr"], value="mmr", label="Search type", info="MMR: Maximal marginal relevance optimizes for similarity to query AND diversity among selected documents.")
                 k = gr.Slider(1, 10, value=4, step=1, label="k", info="Number of documents retrieved")
                 gr.Markdown("Use these with mmr")
@@ -147,7 +148,7 @@ with gr.Blocks() as azure:
     input_dropdown.select(fn=initiate_input, inputs=input_dropdown, outputs=[input_display, input])
     
     generate_btn.click(fn=rag.generate, inputs=input, outputs=[output, debug_metadata, debug_page])
-    simulator_btn.click(fn=simulatorGenerator.generate, inputs=[input, template, search_type, k, lambda_mult, fetch_k], outputs=[output, debug_metadata, debug_page])
+    simulator_btn.click(fn=simulatorGenerator.generate, inputs=[input, template, search_type, k, lambda_mult, fetch_k, use_aug], outputs=[output, debug_metadata, debug_page])
 
 
 ############################### CSV IMPORT INTERFACE #####################################
