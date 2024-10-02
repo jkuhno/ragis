@@ -8,7 +8,7 @@ Security analysts often spend significant time investigating false positives, wh
 We are using LangChain to build our RAG analyzer, Gradio as UI framework and Nvidia cloud endpoints to run models. Azure queries are done with `msgraph` and `azure.monitor.query`.
 
 The RAG part of our app starts with `ChromaDB` vectorstore loading, where vector embedding is done with `NV-Embed-QA`. We prompt `meta/llama-3.1-70b-instruct` chat model to act as an assistant tasked with determining if an input incident is a "true positive" or "false positive", and give the retrieved documents from `ChromaDB` as context.
-Retriever is paramterized to include some added diversity in the data, without sacrificing too much accuracy.
+Retriever is parameterized to include some added diversity in the data, without sacrificing too much accuracy.
 
 Details on the azure queries:
 ```
