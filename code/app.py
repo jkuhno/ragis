@@ -49,6 +49,14 @@ def hide_success(success):
     
 
 def input_query_azure(id, old_dropdown, timespan):
+    # Check if "AZURE_CLIENT_ID" is set
+    if not os.getenv("AZURE_CLIENT_ID"):
+        raise gr.Error("Please set your AZURE CLIENT ID in 'Environment ->  Secrets -> Add -> Name=AZURE_CLIENT_ID, value=<your-application-id>'")
+    if not os.getenv("AZURE_CLIENT_ID"):
+        raise gr.Error("Please set your AZURE TENANT ID in 'Environment ->  Secrets -> Add -> Name=AZURE_CLIENT_ID, value=<your-tenant-id>'")
+    if not os.getenv("AZURE_CLIENT_ID"):
+        raise gr.Error("Please set your AZURE CLIENT SECRET in 'Environment ->  Secrets -> Add -> Name=AZURE_CLIENT_ID, value=<your-client-secret>'")
+        
     inputs = [kql.get_response(id, "Inputs", timespan)]
     inputs = loader.kql_input_alert_tuple(inputs)
     return gr.Dropdown(inputs, label="Queried inputs", visible=True), inputs
@@ -64,6 +72,14 @@ def load_vectorstore(success, path=""):
 
 
 def default_query_azure(id, query, success):
+        # Check if "AZURE_CLIENT_ID" is set
+    if not os.getenv("AZURE_CLIENT_ID"):
+        raise gr.Error("Please set your AZURE CLIENT ID in 'Environment ->  Secrets -> Add -> Name=AZURE_CLIENT_ID, value=<your-application-id>'")
+    if not os.getenv("AZURE_CLIENT_ID"):
+        raise gr.Error("Please set your AZURE TENANT ID in 'Environment ->  Secrets -> Add -> Name=AZURE_CLIENT_ID, value=<your-tenant-id>'")
+    if not os.getenv("AZURE_CLIENT_ID"):
+        raise gr.Error("Please set your AZURE CLIENT SECRET in 'Environment ->  Secrets -> Add -> Name=AZURE_CLIENT_ID, value=<your-client-secret>'")
+        
     docs_csvs = []
     if "Users" in query:
         docs_csvs.append(asyncio.run(entra_id.get_users("csv")))
@@ -85,6 +101,7 @@ def initiate_input(input_):
 ############################### AZURE CONNECTION INTERFACE ###############################
 ##########################################################################################
 with gr.Blocks() as azure:
+    
     input = gr.State()
     
     gr.Markdown(
@@ -155,7 +172,7 @@ Here are the company documents: {documents}
                 search_type = gr.Radio(["similarity", "mmr"], value="mmr", label="Search type", info="MMR: Maximal marginal relevance optimizes for similarity to query AND diversity among selected documents.")
                 k = gr.Slider(1, 10, value=5, step=1, label="k", info="Number of documents retrieved")
                 gr.Markdown("Use these with mmr")
-                lambda_mult = gr.Number(label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum, changes of 0.005 make a difference. (Default: 0.5)")
+                lambda_mult = gr.Number(label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum, changes of 0.001 make a difference. (Default: 0.5)")
                 fetch_k = gr.Slider(1, 50, value=50, step=1, label="fetch_k", info="Amount of documents to pass to MMR algorithm")
                 
                 simulator_btn = gr.Button("Generate", elem_classes="btn")
@@ -252,7 +269,7 @@ Here are the company documents: {documents}
                 search_type = gr.Radio(["similarity", "mmr"], value="mmr", label="Search type", info="MMR: Maximal marginal relevance optimizes for similarity to query AND diversity among selected documents.")
                 k = gr.Slider(1, 10, value=5, step=1, label="k", info="Number of documents retrieved")
                 gr.Markdown("Use these with mmr")
-                lambda_mult = gr.Number(label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum, changes of 0.005 make a difference. (Default: 0.5)")
+                lambda_mult = gr.Number(label="lambda_mult", info=" Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum, changes of 0.001 make a difference. (Default: 0.5)")
                 fetch_k = gr.Slider(1, 50, value=50, step=1, label="fetch_k", info="Amount of documents to pass to MMR algorithm")
                 
                 simulator_btn = gr.Button("Generate", elem_classes="btn")
@@ -281,7 +298,7 @@ Here are the company documents: {documents}
 
 
 # Put the UI in a tabbed interface, representing two usage scenarios
-app = gr.TabbedInterface(interface_list=[csvs, azure], tab_names=["Azure connection", "Import csv"], theme=theme, css=css)
+app = gr.TabbedInterface(interface_list=[csvs, azure], tab_names=["Import csv", "Azure connection"], theme=theme, css=css)
 
 proxy_prefix = os.environ.get("PROXY_PREFIX")
 app.launch(server_name="0.0.0.0", server_port=8080, root_path=proxy_prefix)
