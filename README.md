@@ -8,7 +8,7 @@ Security analysts often spend significant time investigating false positives, wh
 TODO:
 
 ## Setup
-To use RAGIS, you need to get an Nvidia API Key and setup NVIDIA AI Workbench. Optionally, you can also setup to [query data from Azure](#optional-azure-setup)
+To use RAGIS, you need to get an Nvidia API Key and setup NVIDIA AI Workbench. Optionally, you can also setup to [query data from Azure](#steps-for-integrating-ragis-with-azure)
 
 #### API key
 You can generate the key on any model page in the Nvidia API Catalog, for example [here](https://build.nvidia.com/meta/llama-3_1-70b-instruct)
@@ -150,16 +150,7 @@ In the AI Workbench window, from the left menu pane:
 
 #### 5. Log Analytics Workspace ID
 
-Once the Service Principal is created and the necessary permissions are granted, RAGIS can be configured to use it for querying data from the Log Analytics Workspace.
-
-1. **Save the Workspace ID in RAGIS**:
-   - The **Log Analytics Workspace ID** needs to be saved in RAGIS Azure tab.
-
-2. **Query Data**:
-   - RAGIS can now use the Service Principal to query the data:
-     - **Security Alerts**: Used as input for RAGIS analysis.
-     - **Closed Incidents**: Used as background material for RAGIS
-     - **Entra ID user details**: Used as a background material for RAGIS
+# Todo
 
 Make sure to keep all the secret credentials safe and secure, and regularly update them if needed to maintain continuous operation of the system.
 
@@ -186,7 +177,7 @@ Click **Initiate vector database with documents** to spin up the database. Wait 
 On the **left import element**, upload a csv you want to analyze. From sample data you can use files from `/data/test/Sample inputs`. Same thing as with the context files, if using your own data.
 You can inspect the input on the right pane **Input data inspector**.
 
-When data is loaded for context and input is imported, click **Generate**. The false positive analysis will appear in the *Output* window.
+When data is loaded for context and input is imported, click **Generate**. The false positive analysis will appear in the *Output* box.
 Change inputs by importing other input csvs.
 
 #### Optional: "Azure connection"
@@ -194,4 +185,14 @@ Change inputs by importing other input csvs.
 
 If you configured RAGIS to work with Azure, you can use this tab. If not, Search and Query buttons will throw an error.
 
-On the right pane, provide your 
+On the right pane, provide your [Log Analytics Workspace ID](#5-log-analytics-workspace-id), select the document types you want and hit **Query**. Data will load to the database automatically.
+Wait for a success message appearing below the button.
+
+On the left pane, set the **Alert query timespan** and click **Search alerts**. A dropdown will appear, where you can select the input you want to analyze.
+You can inspect the input on the right pane **Data inspector**.
+
+Hit **Generate** to make the analysis.
+
+#### Testing
+
+
