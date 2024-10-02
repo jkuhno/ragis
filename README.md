@@ -8,7 +8,7 @@ Security analysts often spend significant time investigating false positives, wh
 TODO:
 
 ## Setup
-To use RAGIS, you need to get an Nvidia API Key and install NVIDIA AI Workbench. Optionally, you can also [query data from Azure](#optional:-azure-setup)
+To use RAGIS, you need to get an Nvidia API Key and install NVIDIA AI Workbench. Optionally, you can also [query data from Azure](#optional-azure-setup)
 
 ### API key
 
