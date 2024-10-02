@@ -2,10 +2,20 @@
 Our project, RAGIS (Retrieval-Augmented Generation Incident Summary), helps security analysts determine whether an incident is a false positive or if the incident needs further investigation. It leverages generative AI and company data such as Microsoft Entra ID user details and previously closed incidents to make accurate predictions, saving valuable time and reducing the noise from false incidents.
 
 ## Inspiration
-Security analysts often spend significant time investigating false positives, which can lead to inefficiencies. Studies show that nearly a third of their time is spent on incidents that pose no actual threat. This creates alert fatigue and slows down response times, motivating us to create a solution that reduces this burden and helps analysts focus on real security threats.
+Security analysts often spend significant time investigating false positives, which can lead to inefficiencies. [Study](https://www.ibm.com/downloads/cas/5AEDAOJN) shows that nearly a third of their time is spent on incidents that pose no actual threat. This creates alert fatigue and slows down response times, motivating us to create a solution that reduces this burden and helps analysts focus on real security threats.
 
 ## How we built it
-TODO:
+We are using LangChain to build our RAG analyzer, Gradio as UI framework and Nvidia cloud endpoints to run models. Azure queries are done with `msgraph` and `azure.monitor.query`.
+
+The RAG part of our app starts with `ChromaDB` vectorstore loading, where vector embedding is done with `NV-Embed-QA`. We prompt `meta/llama-3.1-70b-instruct` chat model to act as an assistant tasked with determining if an input incident is a "true positive" or "false positive", and give the retrieved documents from `ChromaDB` as context.
+Retriever is paramterized to include some added diversity in the data, without sacrificing too much accuracy.
+
+Details on the azure queries:
+```
+   ./code/kql_module.py
+   ./code/entra_id.py
+```
+Using the ease and speed of AI Workbench we started the development by cloning [Nvidia-provided examples](https://docs.nvidia.com/ai-workbench/user-guide/latest/quickstart/example-projects.html) to the AI Workbench, tinkering and learning!
 
 ## Setup
 To use RAGIS, you need to get an Nvidia API Key and setup NVIDIA AI Workbench. Optionally, you can also setup to [query data from Azure](#steps-for-integrating-ragis-with-azure).
