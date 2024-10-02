@@ -51,7 +51,7 @@ Here are the company documents: {documents}
 
     incident = CSVLoader(file_path=input).load()[0]
 
-    retriever = databases.get_retriever_with_settings("mmr", 5, 0.534, 50)
+    retriever = databases.get_retriever_with_settings("mmr", 5, 0.533, 50)
     context = retriever.invoke(incident.page_content)
     
     # Chain input variables, keys match the input_variables in the PromptTemplate
