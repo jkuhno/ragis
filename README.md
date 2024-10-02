@@ -171,7 +171,7 @@ Make sure to keep all the secret credentials safe and secure and regularly updat
 ## Tutorial
 The demo application should open automatically into a new browser tab after pressing **Open Ragis-demo**. First, you can choose the mode in the top-left corner.
 
-<img src="./code/static/ragis_mode_tab.png" width="100%">
+<img src="./code/static/ragis_mode_tab.png">
 
 Depending on the setup you performed, you can either import csv files or query data from Azure.
 
