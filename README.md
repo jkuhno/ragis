@@ -5,12 +5,21 @@ Our project, RAGIS (Retrieval-Augmented Generation Incident Summary), helps secu
 Security analysts often spend significant time investigating false positives, which can lead to inefficiencies. Studies show that nearly a third of their time is spent on incidents that pose no actual threat. This creates alert fatigue and slows down response times, motivating us to create a solution that reduces this burden and helps analysts focus on real security threats.
 
 ## How we built it
-We used NVIDIA AI Workbench with LangChain to build a retrieval-augmented generation (RAG) system. Closed incidents and user data are embedded in a Chroma vector database, and a Llama 3.1 70B instruct model is used to predict whether an incident is false or true positive.
+TODO:
+
+## Setup
+To use RAGIS, you need to get an Nvidia API Key and install NVIDIA AI Workbench. Optionally, you can also [query data from Azure](#optional:-azure-setup)
+
+### API key
+
+### NVIDIA AI Workbench
+
+### OPTIONAL: Azure setup
 
 <blockquote>
 <details>
 <summary>
-## Integrating RAGIS with Azure
+Additional setup for integrating RAGIS with Azure
 </summary>
     
 RAGIS can be integrated with Azure to easily get all the data needed without saving copies of .csv files. RAGIS then can query background materials such as previously closed security incidents and Entra ID user details and also security alerts that are used as an input for RAGIS.
