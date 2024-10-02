@@ -194,5 +194,19 @@ You can inspect the input on the right pane **Data inspector**.
 Hit **Generate** to make the analysis.
 
 #### Testing
+Under the *Output* box, you can find **debug**. This expands some features for testing and tuning the system.
 
+##### Context rows
+Will display the metadata of documents retrieved as context.
 
+##### Context pages
+Will diplay the contents of documents retrieved as context.
+
+##### Template
+Here you can alter the prompt for testing purposes. The prompt here will be used when clicking **Generate** at the bottom of **debug**.
+
+##### Query augmentation
+Enabling will add query augmentation.
+
+#### Parameters
+Adjust the parameters of the vector database retriever. [See documentation](https://api.python.langchain.com/en/latest/vectorstores/langchain_community.vectorstores.chroma.Chroma.html#langchain_community.vectorstores.chroma.Chroma.as_retriever).
