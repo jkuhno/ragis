@@ -43,9 +43,9 @@ After you have successfully installed the AI Workbench, follow these steps to se
 Additional setup for integrating RAGIS with Azure
 </summary>
     
-RAGIS can be integrated with Azure to easily get all the data needed without saving copies of .csv files. RAGIS then can query background materials such as previously closed security incidents and Entra ID user details and also security alerts that are used as an input for RAGIS.
+RAGIS can be integrated with Azure to easily get all the data needed without saving copies of .csv files. RAGIS then can query background materials such as previously closed security incidents and Entra ID user details and also security incidents that are used as an input for RAGIS.
 
-This guide provides step-by-step instructions on how to integrate RAGIS with Azure using a Service Principal in Microsoft Entra ID, previously known as Azure Active Directory (Azure AD).
+This guide provides step-by-step instructions on how to integrate RAGIS with Azure using a Service Principal in Microsoft Entra ID.
 
 ### Prerequisites
 
@@ -55,7 +55,6 @@ Before starting the integration process, ensure you meet the following prerequis
 - **Permissions**: You need sufficient permissions to create a Service Principal within Entra ID (Azure AD).
 - **Log Analytics Workspace**: You should already have a **Log Analytics Workspace** deployed.
 - **Microsoft Sentinel**: Ensure Microsoft Sentinel is deployed and connected to your Log Analytics Workspace.
-- For more details on how to deploy these resources, refer to the official [Microsoft Documentation](https://docs.microsoft.com/en-us/).
 
 ### Steps for Integrating RAGIS with Azure
 
@@ -68,11 +67,11 @@ A Service Principal is an identity created for use with applications, hosted ser
 1. **Sign in to Azure Portal**:
    - Go to [https://portal.azure.com](https://portal.azure.com) and log in with an account that has permission to create a Service Principal in Entra ID.
 
-2. **Access Azure Active Directory**:
-   - In the left-hand navigation pane, click on **Azure Active Directory**.
+2. **Access Entra ID**:
+   - In the left-hand navigation pane, click on **Entra ID**.
 
 3. **Create a New Application**:
-   - In the **Azure AD** blade, select **App registrations** from the left sidebar.
+   - In the **Entra ID** blade, select **App registrations** from the left sidebar.
    - Click on **New registration** at the top.
 
 4. **Configure the Application**:
@@ -82,7 +81,7 @@ A Service Principal is an identity created for use with applications, hosted ser
 
 #### 2. Create a Client Secret
 
-After creating the Service Principal, you need to generate a **Client Secret** that will allow RAGIS to authenticate against Azure resources.
+After creating the Service Principal, you need to generate a **Client Secret** that will allow the service principal to authenticate against Azure resources.
 
 ##### Steps to Create a Client Secret:
 
@@ -104,6 +103,8 @@ To allow the Service Principal to access the necessary resources, specific permi
 
 ##### Assign **User.Read.All** Permissions (Microsoft Graph API):
 
+This permission is needed to query Entra ID user details.
+
 1. **Navigate to API Permissions**:
    - On the Service Principal’s page, click **API permissions** in the left navigation pane.
 
@@ -121,7 +122,7 @@ To allow the Service Principal to access the necessary resources, specific permi
 
 ##### Assign Log Analytics Reader Role:
 
-The Service Principal also needs to be able to query data from the Log Analytics Workspace.
+The Log Analytics Reader role is needed for the service principal to be able to query log data from the Log Analytics Workspace
 
 1. **Assign Log Analytics Reader Role**:
    - Go to the **Log Analytics Workspace** you are using with Sentinel.
@@ -149,9 +150,20 @@ In the AI Workbench window, from the left menu pane:
 
 #### 5. Log Analytics Workspace ID
 
-# Todo
+1. **Sign in to the Azure Portal**:
+   - Go to [portal.azure.com](https://portal.azure.com) and log in with your credentials.
 
-Make sure to keep all the secret credentials safe and secure, and regularly update them if needed to maintain continuous operation of the system.
+2. **Navigate to Log Analytics Workspaces**:
+   - In the left-hand menu, select **"All services"**.
+   - In the search bar, type **"Log Analytics"** and select **"Log Analytics Workspaces"** from the results.
+
+3. **Select your Workspace**:
+   - From the list of workspaces, click on the **Log Analytics Workspace** you want to retrieve the ID for.
+
+4. **Get Workspace ID**:
+   - On the **Overview** page of your workspace, under **"Essentials"**, locate the **Workspace ID**.
+
+Make sure to keep all the secret credentials safe and secure and regularly update them if needed to maintain the continuous operation of the system. Consider storing secrets for example in Azure Key Vault, if the application is not run locally.
 
 </details>
 </blockquote>
