@@ -178,7 +178,7 @@ Here are the company documents: {documents}
                 simulator_btn = gr.Button("Generate", elem_classes="btn")
             
         with gr.Column(scale=1, variant='compact'):     
-            workspace_id = gr.Textbox(label="Your Log Analytics workspace ID", value="1bffa9d3-05ed-4784-8a15-2dc8d257b039", type="password")
+            workspace_id = gr.Textbox(label="Your Log Analytics workspace ID", type="password")
             default_query_group = gr.CheckboxGroup(choices=["Closed incidents", "Users"], value="Closed incidents", label="Queries", info="Select at least one")
             default_query_btn = gr.Button("Query", elem_classes="btn")  
             success = gr.Markdown("", visible=False)

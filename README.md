@@ -7,7 +7,12 @@ Security analysts often spend significant time investigating false positives, wh
 ## How we built it
 We used NVIDIA AI Workbench with LangChain to build a retrieval-augmented generation (RAG) system. Closed incidents and user data are embedded in a Chroma vector database, and a Llama 3.1 70B instruct model is used to predict whether an incident is false or true positive.
 
+<blockquote>
+<details>
+<summary>
 ## Integrating RAGIS with Azure
+</summary>
+    
 RAGIS can be integrated with Azure to easily get all the data needed without saving copies of .csv files. RAGIS then can query background materials such as previously closed security incidents and Entra ID user details and also security alerts that are used as an input for RAGIS.
 
 This guide provides step-by-step instructions on how to integrate RAGIS with Azure using a Service Principal in Microsoft Entra ID, previously known as Azure Active Directory (Azure AD).
@@ -120,3 +125,6 @@ Once the Service Principal is created and the necessary permissions are granted,
      - **Entra ID user details**: Used as a background material for RAGIS
 
 Make sure to keep all the secret credentials safe and secure, and regularly update them if needed to maintain continuous operation of the system.
+
+</details>
+</blockquote>
