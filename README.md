@@ -52,7 +52,7 @@ This guide provides step-by-step instructions on how to integrate RAGIS with Azu
 Before starting the integration process, ensure you meet the following prerequisites:
 
 - **Azure Subscription**: You must have an active Azure Subscription.
-- **Permissions**: You need sufficient permissions to create a Service Principal within Entra ID (Azure AD).
+- **Permissions**: You need sufficient permissions to create a Service Principal within Entra ID.
 - **Log Analytics Workspace**: You should already have a **Log Analytics Workspace** deployed.
 - **Microsoft Sentinel**: Ensure Microsoft Sentinel is deployed and connected to your Log Analytics Workspace.
 
