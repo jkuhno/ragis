@@ -1,9 +1,13 @@
-import pandas as pd
-from langchain_community.document_loaders import CSVLoader
-
-import kql_module as kql
+# Copyright (c) 2024 Jani Kuhno, Joel Kataja
+# https://www.apache.org/licenses/LICENSE-2.0.txt License.
+# Author: Jani Kuhno
 
 # Module for transforming data from a format to another
+
+import pandas as pd
+from langchain_community.document_loaders import CSVLoader
+import kql_module as kql
+
 
 # Converts a response from Log Analytics kql alert query into a list of tuples [(friendly_alert_name, csv_path),...]
 #

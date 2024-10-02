@@ -1,3 +1,10 @@
+# Copyright (c) 2024 Jani Kuhno, Joel Kataja
+# https://www.apache.org/licenses/LICENSE-2.0.txt License.
+# Author: Jani Kuhno, Joel Kataja
+
+# Module for querying Entra ID user information from Azure
+
+
 from azure.identity import ClientSecretCredential
 from azure.identity import DefaultAzureCredential
 from msgraph import GraphServiceClient

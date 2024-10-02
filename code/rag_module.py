@@ -1,3 +1,10 @@
+# Copyright (c) 2024 Jani Kuhno, Joel Kataja
+# https://www.apache.org/licenses/LICENSE-2.0.txt License.
+# Author: Jani Kuhno
+
+# Module for the LLm chain
+
+
 from langchain.prompts import PromptTemplate
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_core.output_parsers import StrOutputParser

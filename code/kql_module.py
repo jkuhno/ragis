@@ -1,8 +1,13 @@
+# Copyright (c) 2024 Jani Kuhno, Joel Kataja
+# https://www.apache.org/licenses/LICENSE-2.0.txt License.
+# Author: Jani Kuhno, Joel Kataja
+
+# Module for KQL queries to get incident-related data from Azure
+
+
 from azure.identity import DefaultAzureCredential
 from azure.monitor.query import LogsQueryClient
 from datetime import timedelta
-
-# Azure connections
 
 
 # Default KQL for context closed incidents querying

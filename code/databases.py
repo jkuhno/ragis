@@ -1,3 +1,9 @@
+# Copyright (c) 2024 Jani Kuhno, Joel Kataja
+# https://www.apache.org/licenses/LICENSE-2.0.txt License.
+# Author: Jani Kuhno
+
+# Module for ChromaDB related functions
+
 from langchain_community.vectorstores import Chroma
 from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 
