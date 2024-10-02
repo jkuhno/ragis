@@ -8,15 +8,35 @@ Security analysts often spend significant time investigating false positives, wh
 TODO:
 
 ## Setup
-To use RAGIS, you need to get an Nvidia API Key and install NVIDIA AI Workbench. Optionally, you can also [query data from Azure](#optional-azure-setup)
+To use RAGIS, you need to get an Nvidia API Key and setup NVIDIA AI Workbench. Optionally, you can also setup to [query data from Azure](#optional-azure-setup)
 
-### API key
-./code/nvidia_get_api_key.png
+#### API key
+You can generate the key on any model page in the Nvidia API Catalog, for example [here](https://build.nvidia.com/meta/llama-3_1-70b-instruct)
+
+#### laita kuva
 <img src="./code/nvidia_get_api_key.png" width="100%">
 
-### NVIDIA AI Workbench
+Save the generated key somewhere for later.
 
-### OPTIONAL: Azure setup
+#### NVIDIA AI Workbench
+If you do not NVIDIA AI Workbench installed, first [follow the installation instructions](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/overview.html).
+After you have successfully installed the AI Workbench, follow these steps to set up RAGIS demo:
+
+1. Fork this project, copy the forked project URL.
+   
+2. Open NVIDIA AI Workbench. Select a location. 
+   
+3. Select **Clone Project**, paste your GitHub link to *Repository URL* and click **Clone**.
+   
+4. Wait for the project to build. This can take a while, for us it typically takes 1-5 minutes. 
+   
+5. When the build completes, set the following configurations. Starting from the left menu pane:
+
+   * **Environment** &rarr; **Secrets** &rarr; **Add**. Specify the *Name* as `NVIDIA_API_KEY` and copy&paste the Nvidia API key you generated earlier to *Value*, click **Add**.
+
+6. If you want to configure integration with Azure, continue to the next section. If you are fine without, rebuild the project if prompted, and click **Open Ragis-demo** in the top-right corner. All set!
+
+#### OPTIONAL: Azure setup
 
 <blockquote>
 <details>
@@ -118,11 +138,17 @@ After configuring the Service Principal, you will need to collect the following 
 
 - **Client ID**: Found on the Service Principal’s overview page.
 - **Tenant ID**: Found on the Service Principal’s overview page.
-- **Client Secret**: Created in the previous step.
+- **Client Secret**: Created [previously](#steps-to-create-a-client-secret).
 
 You will need to store these values as environmental secrets within the NVIDIA AI Workbench. This will allow RAGIS to authenticate as a service principal and query data from Azure Log Analytics Workspace.
+In the AI Workbench window, from the left menu pane:
 
-#### 5. Configure RAGIS to Query Log Analytics Data
+   * **Environment** &rarr; **Secrets** &rarr; **Add**:
+     - `AZURE_CLIENT_ID` = **Client ID**
+     - `AZURE_TENANT_ID` = **Tenant ID**
+     - `AZURE_CLIENT_SECRET` = **Client Secret**
+
+#### 5. Log Analytics Workspace ID
 
 Once the Service Principal is created and the necessary permissions are granted, RAGIS can be configured to use it for querying data from the Log Analytics Workspace.
 
@@ -139,3 +165,33 @@ Make sure to keep all the secret credentials safe and secure, and regularly upda
 
 </details>
 </blockquote>
+
+## Tutorial
+The demo application should open automatically into a new browser tab after pressing **Open Ragis-demo**. First, you can choose the mode in the top-left corner.
+
+#### laita kuva
+Depending on the setup you performed, you can either import csv files or query data from Azure.
+
+We provided sample data you can use for csv imports:
+```
+   ./data/test
+```
+#### "Import CSV"
+#### laita kuva
+
+On the **right import element**, upload csvs you want to use as context for generation. From sample data you can use files from `/data/test/Closed Incidents` and `/data/test/Users`.
+If you want to test on your own data, please match the format and column names of sample files.
+Click **Initiate vector database with documents** to spin up the database. Wait for a success message appearing below the button.
+
+On the **left import element**, upload a csv you want to analyze. From sample data you can use files from `/data/test/Sample inputs`. Same thing as with the context files, if using your own data.
+You can inspect the input on the right pane **Input data inspector**.
+
+When data is loaded for context and input is imported, click **Generate**. The false positive analysis will appear in the *Output* window.
+Change inputs by importing other input csvs.
+
+#### Optional: "Azure connection"
+#### laita kuva
+
+If you configured RAGIS to work with Azure, you can use this tab. If not, Search and Query buttons will throw an error.
+
+On the right pane, provide your 
