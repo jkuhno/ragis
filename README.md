@@ -11,6 +11,8 @@ TODO:
 To use RAGIS, you need to get an Nvidia API Key and install NVIDIA AI Workbench. Optionally, you can also [query data from Azure](#optional-azure-setup)
 
 ### API key
+./code/nvidia_get_api_key.png
+<img src="./code/nvidia_get_api_key.png" width="100%">
 
 ### NVIDIA AI Workbench
 
