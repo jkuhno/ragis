@@ -8,13 +8,12 @@ Security analysts often spend significant time investigating false positives, wh
 TODO:
 
 ## Setup
-To use RAGIS, you need to get an Nvidia API Key and setup NVIDIA AI Workbench. Optionally, you can also setup to [query data from Azure](#steps-for-integrating-ragis-with-azure)
+To use RAGIS, you need to get an Nvidia API Key and setup NVIDIA AI Workbench. Optionally, you can also setup to [query data from Azure](#steps-for-integrating-ragis-with-azure).
 
 #### API key
-You can generate the key on any model page in the Nvidia API Catalog, for example [here](https://build.nvidia.com/meta/llama-3_1-70b-instruct)
+You can generate the key on any model page in the Nvidia API Catalog, for example [here](https://build.nvidia.com/meta/llama-3_1-70b-instruct).
 
-#### laita kuva
-<img src="./code/nvidia_get_api_key.png" width="100%">
+<img src="./code/static/nvidia_get_api_key.png" width="100%">
 
 Save the generated key somewhere for later.
 
@@ -160,7 +159,8 @@ Make sure to keep all the secret credentials safe and secure, and regularly upda
 ## Tutorial
 The demo application should open automatically into a new browser tab after pressing **Open Ragis-demo**. First, you can choose the mode in the top-left corner.
 
-#### laita kuva
+<img src="./code/static/ragis_mode_tab.png" width="100%">
+
 Depending on the setup you performed, you can either import csv files or query data from Azure.
 
 We provided sample data you can use for csv imports:
@@ -168,7 +168,8 @@ We provided sample data you can use for csv imports:
    ./data/test
 ```
 #### "Import CSV"
-#### laita kuva
+
+<img src="./code/static/ragis-import-csv.png" width="100%">
 
 On the **right import element**, upload csvs you want to use as context for generation. From sample data you can use files from `/data/test/Closed Incidents` and `/data/test/Users`.
 If you want to test on your own data, please match the format and column names of sample files.
@@ -181,7 +182,8 @@ When data is loaded for context and input is imported, click **Generate**. The f
 Change inputs by importing other input csvs.
 
 #### Optional: "Azure connection"
-#### laita kuva
+
+<img src="./code/static/ragis_azure.png" width="100%">
 
 If you configured RAGIS to work with Azure, you can use this tab. If not, Search and Query buttons will throw an error.
 
