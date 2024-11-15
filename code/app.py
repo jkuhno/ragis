@@ -43,6 +43,21 @@ checkbox {
 if not os.environ.get("NVIDIA_API_KEY", "").startswith("nvapi-"):
     raise gr.Error("Please set your NVIDIA API KEY in 'Environment ->  Secrets -> Add -> Name=NVIDIA_API_KEY, value=<your-api-key>'")
 
+# For simplified demo file usage, provide a list of files to choose an input from, and return the selected path to the File element default value
+def demo_input_file(selected_file):
+    file_paths = {
+        "Sample 23: False positive": "/project/data/test/23-NewSecIncident-False.csv",
+        "Sample 45: False positive": "/project/data/test/45-NewSecIncident-False.csv",
+        "Sample 22: True positive": "/project/data/test/22-NewSecIncident-True.csv",
+        "Sample 49: True positive": "/project/data/test/49-NewSecIncident-True.csv"
+    }
+    
+    # Get the selected file path from the dictionary
+    selected_file_path = file_paths.get(selected_file)
+    
+    # Return the updated file object
+    return gr.File(value=selected_file_path)
+
 
 def hide_success(success):
     return gr.Markdown("", visible=False)
@@ -222,6 +237,10 @@ with gr.Blocks() as csvs:
         ---
 
         """)
+    demo_input = gr.Dropdown(
+        choices=["Sample 23: False positive", "Sample 45: False positive", "Sample 22: True positive", "Sample 49: True positive"],
+        label="Choose a sample input file"
+    )
     
     with gr.Row():
         with gr.Column(scale=2, variant='panel'):
@@ -275,7 +294,7 @@ Here are the company documents: {documents}
                 simulator_btn = gr.Button("Generate", elem_classes="btn")
             
         with gr.Column(scale=1, variant='compact'):
-            document_import = gr.File(label="Import your context csv files", file_count="multiple")
+            document_import = gr.File(label="Import your context csv files", value=["/project/data/test/exportUsers.csv", "/project/data/test/ClosedSecurityIncidents.csv"], file_count="multiple")
             document_upload_btn = gr.Button("Initiate vetor database with documents", elem_classes="btn")
             success = gr.Markdown("", visible=False)
 
@@ -284,6 +303,8 @@ Here are the company documents: {documents}
 
     
     # Event listeners
+    demo_input.input(fn=demo_input_file, inputs=demo_input, outputs=input_import)
+    
     document_upload_btn.click(fn=hide_success, inputs=[success], outputs=[success])
     document_upload_btn.click(fn=load_vectorstore, inputs=[success, document_import], outputs=[success])
 

@@ -120,3 +120,7 @@ execution:
     target: /data/tmp/
     description: Temporary directory for data handling
     options: ""
+  - type: volume
+    target: /data/test/
+    description: ""
+    options: ""
