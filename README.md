@@ -186,11 +186,12 @@ The demo application should open automatically into a new browser tab after pres
 Depending on the setup you performed, you can either import csv files or query data from Azure.
 
 We provided sample data you can use for csv imports.
+
 **Update:**  The data now comes with the container, no need to download the data. Input incident can now be selected from a list, and context documents are automatically populated.
 
 #### "Import CSV"
 
-<img src="./code/static/ragis-import-csv.png" width="100%">
+<img src="./code/static/Screenshot 2024-11-15 201550.png" width="100%">
 
 On the **right import element**, upload csvs you want to use as context for generation. Sample data is populated in the element by default.
 If you want to test on your own data, please remove the defaults from import element. Make sure to match the format and column names of sample files.
