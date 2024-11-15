@@ -185,19 +185,16 @@ The demo application should open automatically into a new browser tab after pres
 
 Depending on the setup you performed, you can either import csv files or query data from Azure.
 
-We provided sample data you can use for csv imports:
-```
-   ./data/test
-```
+**Update:** We provided sample data you can use for csv imports. The data now comes with the container. Input incident can now be selected from a list, and context documents are automatically populated.
 #### "Import CSV"
 
 <img src="./code/static/ragis-import-csv.png" width="100%">
 
-On the **right import element**, upload csvs you want to use as context for generation. From sample data you can use files from `/data/test/Closed Incidents` and `/data/test/Users`.
-If you want to test on your own data, please match the format and column names of sample files.
+On the **right import element**, upload csvs you want to use as context for generation. Sample data is populated in the element by default.
+If you want to test on your own data, please remove the defaults from import element. Make sure to match the format and column names of sample files.
 Click **Initiate vector database with documents** to spin up the database. Wait for a success message appearing below the button.
 
-On the **left import element**, upload a csv you want to analyze. From sample data you can use files from `/data/test/Sample inputs`. Same thing as with the context files, if using your own data.
+On the **left import element**, upload a csv you want to analyze. When using provided sample data, select an input sample from the list. Same thing as with the context files, if using your own data.
 You can inspect the input on the right pane **Input data inspector**.
 
 When data is loaded for context and input is imported, click **Generate**. The false positive analysis will appear in the *Output* box.
