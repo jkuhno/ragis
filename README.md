@@ -185,7 +185,9 @@ The demo application should open automatically into a new browser tab after pres
 
 Depending on the setup you performed, you can either import csv files or query data from Azure.
 
-**Update:** We provided sample data you can use for csv imports. The data now comes with the container. Input incident can now be selected from a list, and context documents are automatically populated.
+We provided sample data you can use for csv imports.
+**Update:**  The data now comes with the container, no need to download the data. Input incident can now be selected from a list, and context documents are automatically populated.
+
 #### "Import CSV"
 
 <img src="./code/static/ragis-import-csv.png" width="100%">
