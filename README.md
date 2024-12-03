@@ -1,4 +1,5 @@
 # RAGIS (Retrieval-Augmented Generation Incident Summary)
+## 🏆 HackAI - Dell and NVIDIA Challenge first place! 🏆
 Our project, RAGIS (Retrieval-Augmented Generation Incident Summary), helps security analysts determine whether an incident is a false positive or if the incident needs further investigation. It leverages generative AI and company data such as Microsoft Entra ID user details and previously closed incidents to make accurate predictions, saving valuable time and reducing the noise from false incidents.
 
 ## Inspiration
